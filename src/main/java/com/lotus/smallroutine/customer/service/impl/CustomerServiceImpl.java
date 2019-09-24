@@ -108,7 +108,10 @@ public class CustomerServiceImpl extends AbstractService implements ICustomerSer
 	@Override
 	public Message selectCustomer(Customer customer)throws Exception{
 		Message	message = this.iMessage.buildDefaultMessage();
-		customer.setId(CurrentWxMiniCustomer.obtainCustomerID());
+		if(StringUtils.isEmpty(customer.getId())) {
+			customer.setId(CurrentWxMiniCustomer.obtainCustomerID());
+		}
+		
 		if(null!=customer && !StringUtils.isEmpty(customer.getId())) {
 			customer = customerMapper.selectByPrimaryKey(customer.getId());
 			message = this.iMessage.buildSuccessMessage();
@@ -124,6 +127,63 @@ public class CustomerServiceImpl extends AbstractService implements ICustomerSer
 		return null;
 	}
 
+	/**
+	 * 更新数据库用户的的微信信息
+	 */
+	@Override
+	public Message updateWxCustomer(Customer customer) throws Exception {
+		Message	message = this.iMessage.buildDefaultMessage();
+		
+		if(!StringUtils.isEmpty(customer.getWxMiniProRawData())) {
+	        Map<String, Object> userInfoMap = objectMapper.readValue(customer.getWxMiniProRawData(), Map.class);
+	        
+			readWxUserInfoMap(userInfoMap,customer);
+			int oprate = customerMapper.updateByPrimaryKeySelective(customer);
+			message = iMessage.buildSuccessMessage();
+			message.setData(oprate);
+		}else {
+			throw new BaseException("rowData无效");
+		}
+		return message;
+	}
+	
+	private Customer readWxUserInfoMap(Map<String, Object> userInfoMap,Customer wxCustomerParam) {
+		Iterator<Entry<String, Object>> enIterator =  userInfoMap.entrySet().iterator();
+		 while(enIterator.hasNext()) {
+			 Entry<String, Object>  entry = enIterator.next();
+			logger.info(entry.getKey()+"------------------------------"+entry.getValue());
+		 }
+	        if(null!=userInfoMap) {
+	        	if(userInfoMap.containsKey("unionId") && null!=userInfoMap.get("unionId")){
+	        		wxCustomerParam.setWxMiniProUnionId(String.valueOf(userInfoMap.get("unionId")));
+	        	}
+				if(userInfoMap.containsKey("nickName") && null!=userInfoMap.get("nickName")){
+					wxCustomerParam.setNickName(String.valueOf(userInfoMap.get("nickName")));
+			    }
+				if(userInfoMap.containsKey("avatarUrl") && null!=userInfoMap.get("avatarUrl")){
+					//logger.info("------------------------------------------------"+String.valueOf(userInfoMap.get("avatarUrl")));
+					wxCustomerParam.setWxMiniProAvatarUrl(String.valueOf(userInfoMap.get("avatarUrl")));
+					wxCustomerParam.setHeadPortrait(String.valueOf(userInfoMap.get("avatarUrl")));
+				}
+				if(userInfoMap.containsKey("gender") && null!=userInfoMap.get("gender")){
+					wxCustomerParam.setSex(Integer.valueOf(userInfoMap.get("gender").toString()));
+				}
+				
+				StringBuffer address = new StringBuffer();
+				if(userInfoMap.containsKey("country") && null!=userInfoMap.get("country")){
+					address.append(userInfoMap.get("country"));
+				}
+				if(userInfoMap.containsKey("province") && null!=userInfoMap.get("province")){
+					address.append(userInfoMap.get("province"));
+				}
+               if(userInfoMap.containsKey("city") && null!=userInfoMap.get("city")){
+               	address.append(userInfoMap.get("city"));
+				}
+               wxCustomerParam.setGeographicalPosition(address.toString());
+				
+	         }
+	        return wxCustomerParam;
+	}
 	@Override
 	public Message login(Customer customer) throws Exception {
 		Message	message = this.iMessage.buildLoginFailMessage();
@@ -139,56 +199,31 @@ public class CustomerServiceImpl extends AbstractService implements ICustomerSer
 			WxMiniProAuthCodeResponse wxMiniProAuthCodeResponse = wxMiniProJscode2Session.getWxSession(customer.getWxMiniProCode());
 			Customer wxCustomerParam = new Customer();
 			wxCustomerParam.setWxMiniProOpenId(wxMiniProAuthCodeResponse.getOpenid());
-		        
 			Customer wxCustomer = customerMapper.selectCustomer(wxCustomerParam);
 			
 			if(null==wxCustomer) {
-				 Map<String,Object> userInfoMap = wxMiniProDecodeUserInfo.getUserInfo(customer.getWxMiniProEncrypteData(),
-			        		customer.getWxMiniProsignature(), customer.getWxMiniProIv());
-
-				Iterator<Entry<String, Object>> enIterator =  userInfoMap.entrySet().iterator();
-				 while(enIterator.hasNext()) {
-					 Entry<String, Object>  entry = enIterator.next();
-					System.out.println(entry.getKey()+"------------------------------"+entry.getValue());
-				 }
-			        if(null!=userInfoMap) {
-			        	if(userInfoMap.containsKey("unionId") && null!=userInfoMap.get("unionId")){
-			        		wxCustomerParam.setWxMiniProUnionId(String.valueOf(userInfoMap.get("unionId")));
-			        	}
-						if(userInfoMap.containsKey("nickName") && null!=userInfoMap.get("nickName")){
-							wxCustomerParam.setNickName(String.valueOf(userInfoMap.get("nickName")));
-					    }
-						if(userInfoMap.containsKey("avatarUrl") && null!=userInfoMap.get("avatarUrl")){
-							logger.info("------------------------------------------------"+String.valueOf(userInfoMap.get("avatarUrl")));
-							wxCustomerParam.setWxMiniProAvatarUrl(String.valueOf(userInfoMap.get("avatarUrl")));
-						}
-						if(userInfoMap.containsKey("gender") && null!=userInfoMap.get("gender")){
-							wxCustomerParam.setSex(Integer.valueOf(userInfoMap.get("gender").toString()));
-						}
-						
-						StringBuffer address = new StringBuffer();
-						if(userInfoMap.containsKey("country") && null!=userInfoMap.get("country")){
-							address.append(userInfoMap.get("country"));
-						}
-						if(userInfoMap.containsKey("province") && null!=userInfoMap.get("province")){
-							address.append(userInfoMap.get("province"));
-						}
-	                    if(userInfoMap.containsKey("city") && null!=userInfoMap.get("city")){
-	                    	address.append(userInfoMap.get("city"));
-						}
-	                    wxCustomerParam.setGeographicalPosition(address.toString());
-						
-			         }
+				Map<String,Object> userInfoMap = wxMiniProDecodeUserInfo.getUserInfo(
+						customer.getWxMiniProEncrypteData(), 
+						wxMiniProAuthCodeResponse.getSession_key(),
+						customer.getWxMiniProIv());
+				if(null==userInfoMap) {
+					throw new BaseException("解密用户信息无效");
+				}
+				readWxUserInfoMap(userInfoMap, wxCustomerParam);
+				wxCustomerParam.buildCreateDefaultValue();
 				customerMapper.insertSelective(wxCustomerParam);
+			}else {
+				//wxCustomerParam.setId(CurrentWxMiniCustomer.obtainCustomerID());
+				//customerMapper.updateByPrimaryKeySelective(wxCustomerParam);
 			}
 			
 			try {
 				String token = jwtUtil.generateToken(wxCustomerParam.getId(),objectMapper.writeValueAsString(wxCustomerParam));
-				this.logger.info(token);
 				message = this.iMessage.buildLoginSuccessMessage();
 				Map<String,Object> tokenMap = new HashMap<String,Object>(2) {{
 					put("LOTUS",token);
-					put("id",wxCustomerParam.getId());
+					put("id",(wxCustomer==null?wxCustomerParam.getId():wxCustomer.getId()));
+					//put("wxSessionKey",wxMiniProAuthCodeResponse.getSessionKey());
 				}};
 				message.setData(tokenMap);
 			} catch (JsonProcessingException e1) {
@@ -300,5 +335,4 @@ public class CustomerServiceImpl extends AbstractService implements ICustomerSer
 		}
 		return message;
 	}
-
 }

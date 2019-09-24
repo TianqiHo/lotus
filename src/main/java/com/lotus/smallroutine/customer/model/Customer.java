@@ -52,15 +52,33 @@ public class Customer  extends BaseModel{
 
 	private String wxMiniProCode;
 	
-	//private String wxMiniProRawData;//用户非敏感信息
+	private String wxMiniProRawData;//用户非敏感信息
     private String wxMiniProsignature;//签名
     private String wxMiniProEncrypteData;//用户敏感信息
     private String wxMiniProIv;//解密算法的向量
+    private String wxSeesionKey;
 
     //积分类型ID
     private Long integralTypeId;
 
     
+    
+	public String getWxMiniProRawData() {
+		return wxMiniProRawData;
+	}
+
+	public void setWxMiniProRawData(String wxMiniProRawData) {
+		this.wxMiniProRawData = wxMiniProRawData;
+	}
+
+	public String getWxSeesionKey() {
+		return wxSeesionKey;
+	}
+
+	public void setWxSeesionKey(String wxSeesionKey) {
+		this.wxSeesionKey = wxSeesionKey;
+	}
+
 	public byte[] getNickName1() {
 		if(!StringUtils.isEmpty(nickName)) {
 		   return nickName.getBytes(Charset.defaultCharset());
