@@ -60,13 +60,16 @@ public class CustomerServiceImpl extends AbstractService implements ICustomerSer
 	@Override
 	public Message insertOrUpdate(Customer customer)throws Exception{
 			Message	message = this.iMessage.buildDefaultMessage();
-			switch (customer.getLoginType()) {
+			/*switch (customer.getLoginType()) {
 			case LG_MINIPRO:
-				customer.setId(CurrentWxMiniCustomer.obtainCustomerID());
+				if(!StringUtils.isEmpty(CurrentWxMiniCustomer.obtainCustomerID())) {
+					customer.setId(CurrentWxMiniCustomer.obtainCustomerID());
+				}
+				
 				break;
 			default:
 				break;
-			}
+			}*/
 			if(StringUtils.isEmpty(customer.getId())) {
 				customer.buildCreateDefaultValue();
 				customerMapper.insertSelective(customer);
