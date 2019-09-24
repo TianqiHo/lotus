@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan = "true" scanPeriod = "120 seconds"  debug = "false">
+
+   <property name="contextName" value = "Lotus"></property>
+   
+   <include resource="org/springframework/boot/logging/logback/defaults.xml" ></include>
+   <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+  
+  <contextName>Lotus</contextName>
+  
+   <!-- 时间滚动输出  -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文档的路径及文档名 -->
+         <file>D:\SOFT_LOG\lotus\lotus.log</file>
+        <!-- <file>/root/project//lotus/lotuslog/lotus.log</file> -->
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset> <!-- 设置字符集 -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+             <fileNamePattern>D:\SOFT_LOG\lotus\1\lotus-%d{yyyy-MM-dd}.%i.log</fileNamePattern> 
+            <!--<fileNamePattern>/root/project/lotus/lotuslog/lotus-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <maxHistory>45</maxHistory>
+        </rollingPolicy>
+   </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <logger name="com.lotus.backstage.user.mapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.banner.mapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.category.mapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.news.mapper" level="DEBUG" />
+    <logger name="com.lotus.smallroutine.customer.mapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.comment.mapper.CommentMapper" level="DEBUG" />
+    <logger name="com.lotus.smallroutine.fabulous.mapper.FabulousSeeSumMapper" level="DEBUG" />
+    <logger name="com.lotus.smallroutine.fabulous.mapper.FabulousMapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.integral.mapper.IntegralMapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.integral.mapper.IntegralTypeMapper" level="DEBUG" />
+</configuration>

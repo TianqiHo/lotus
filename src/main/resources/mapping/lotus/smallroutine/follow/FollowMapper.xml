@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.smallroutine.follow.mapper.FollowMapper">
+  <resultMap id="BaseResultMap" type="com.lotus.smallroutine.follow.model.Follow">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="SERCICE_ID" jdbcType="BIGINT" property="serciceId" />
+    <result column="FOLLOW_TYPE" jdbcType="INTEGER" property="followType" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SERCICE_ID, FOLLOW_TYPE, CREATE_TIME, CREATE_BY, VALID
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from follow
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from follow
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.lotus.smallroutine.follow.model.Follow" useGeneratedKeys="true" keyProperty="id">
+   <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+	      SELECT FUN_GET_ID()
+	    </selectKey>
+    insert into follow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="serciceId != null">
+        SERCICE_ID,
+      </if>
+      <if test="followType != null">
+        FOLLOW_TYPE,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="serciceId != null">
+        #{serciceId,jdbcType=BIGINT},
+      </if>
+      <if test="followType != null">
+        #{followType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.smallroutine.follow.model.Follow">
+    update follow
+    <set>
+      <if test="serciceId != null">
+        SERCICE_ID = #{serciceId,jdbcType=BIGINT},
+      </if>
+      <if test="followType != null">
+        FOLLOW_TYPE = #{followType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+ 
+</mapper>

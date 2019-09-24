@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+<title>荷花后台网站-登陆</title>
+<link rel="icon" href="data:image/ico;base64,aWNv">
+<link rel="stylesheet" type="text/css" href="control/bootstrap/3/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="control/jquery/jquery-confirm/jquery-confirm.min.css">
+<link rel="stylesheet" type="text/css" href="css/index/signin.css">
+
+<style type="text/css">
+</style>
+</head>
+<body>
+
+<form class="form-signin" id="loginForm">
+  <img class="mb-4" src="images/logo.png" width="90" height="90">
+  <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+  <label for="userName" class="sr-only">SignIn</label>
+  <input type="text" id="userName" name="userName" class="form-control" placeholder="用户名" required>
+  <label for="passWord" class="sr-only">Password</label>
+  <input type="password" id="passWord" name="passWord" class="form-control" placeholder="密码" required>
+  <div class="checkbox mb-3">
+    <label>
+      <input type="checkbox" value="remember-me"> 记住我
+    </label>
+    <label class="pull-right">
+      <a href="pages/regist/regist.html">注册</a>
+    </label>
+  </div>
+  <button class="btn btn-lg btn-primary btn-block" type="button" onclick="Index.Fn.login()">登陆</button>
+   <p class="mt-5 mb-3 text-muted" style="margin-top: 50px">&copy;2019-hetianqi-hetianqimail@qq.com</p>
+</form>
+</body>
+ 
+<script type="text/javascript" src="control/jquery/jquery.min.js"></script>
+ <script type="text/javascript" src="control/jquery/jquery-confirm/jquery-confirm.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script type="text/javascript" src="control/bootstrap/3/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="js/common/config.js"></script>
+<script type="text/javascript" src="js/common/common.js"></script>
+<script type="text/javascript" src="js/index/index.js"></script>
+</html>

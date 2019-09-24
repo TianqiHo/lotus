@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.backstage.category.mapper.CategoryMapper">
+
+  <resultMap id="BaseResultMap" type="com.lotus.backstage.category.model.Category">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CATEGORY_NAME" jdbcType="VARCHAR" property="categoryName" />
+    <result column="CATEGORY_TYPE" jdbcType="VARCHAR" property="categoryType" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="UPDATE_BY" jdbcType="BIGINT" property="updateBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+    <result column="CATEGORY_IMG" jdbcType="VARCHAR" property="categoryImg" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, CATEGORY_NAME, CATEGORY_TYPE, CATEGORY_IMG, VALID, CREATE_TIME, CREATE_BY, UPDATE_BY, UPDATE_TIME, 
+    VERSION, LOG
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from category
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from category where ID = #{id,jdbcType=BIGINT}
+  </delete>
+ 
+  <insert id="insertSelective" parameterType="com.lotus.backstage.category.model.Category">
+    <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+      SELECT FUN_GET_ID()
+    </selectKey>
+    insert into category
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="categoryName != null">
+        CATEGORY_NAME,
+      </if>
+      <if test="categoryType != null">
+        CATEGORY_TYPE,
+      </if>
+      <if test="categoryImg != null">
+        CATEGORY_IMG,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="categoryName != null">
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryType != null">
+        #{categoryType,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryImg != null">
+          #{categoryImg,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.backstage.category.model.Category">
+    update category
+    <set>
+      <if test="categoryName != null">
+        CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryType != null">
+        CATEGORY_TYPE = #{categoryType,jdbcType=VARCHAR},
+      </if>
+       <if test="categoryImg != null">
+        CATEGORY_IMG = #{categoryImg,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectCategorys" parameterType="com.lotus.backstage.category.model.Category" resultType="com.lotus.backstage.category.model.Category">
+      select 
+    <!-- <include refid="Base_Column_List" /> -->
+    	A.ID AS id,
+		A.CATEGORY_IMG AS categoryImg,
+		A.CATEGORY_NAME AS categoryName,
+		A.CATEGORY_TYPE AS categoryType,
+		COUNT(C.ID) AS newsCount
+	    from category A
+	    LEFT JOIN NEWS2CATEGORY B ON A.ID = B.CATEGORY_ID
+	    LEFT JOIN NEWS C ON B.NEWS_ID = C.ID
+    <trim prefix="WHERE " suffixOverrides="AND">
+       <if test="id != null">
+        A.ID = #{id,jdbcType=BIGINT} AND
+      </if>
+      <if test="categoryName != null and categoryName !=''">
+        A.CATEGORY_NAME Like CONCAT('%',#{categoryName,jdbcType=VARCHAR},'%') AND
+      </if>
+      <if test="categoryType != null and categoryType !=''">
+        A.CATEGORY_TYPE = #{categoryType,jdbcType=INTEGER} AND
+      </if>
+     
+      <if test="valid != null">
+        A.VALID = #{valid,jdbcType=INTEGER} AND
+      </if>
+      <if test="beginTime != null">
+        DATE_FORMAT(#{beginTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AND 
+      </if>
+      <if test="createBy != null">
+       A.CREATE_BY = #{createBy,jdbcType=BIGINT} AND
+      </if>
+      <if test="updateBy != null">
+        A.UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND
+      </if>
+      <if test="endTime != null">
+        IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) &lt;= DATE_FORMAT(#{endTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') AND
+      </if>
+   
+    </trim>
+     GROUP BY A.ID ORDER BY IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) DESC
+  </select>
+  
+  <!-- 
+  <select id="selectCategoryAndNewsCount" parameterType="com.lotus.backstage.category.model.Category" resultType="com.lotus.backstage.category.model.Category">
+    SELECT 
+		A.ID AS id,
+		A.CATEGORY_IMG AS categoryImg,
+		A.CATEGORY_NAME AS categoryName,
+		A.CATEGORY_TYPE AS categoryType,
+		COUNT(C.ID) AS newsCount
+		FROM CATEGORY A 
+		LEFT JOIN NEWS2CATEGORY B ON A.ID = B.CATEGORY_ID
+		LEFT JOIN NEWS C ON B.NEWS_ID = C.ID
+		WHERE A.CATEGORY_TYPE = 'BBS_TYPE'
+		GROUP BY A.ID ORDER BY newsCount DESC
+  </select> -->
+  
+</mapper>

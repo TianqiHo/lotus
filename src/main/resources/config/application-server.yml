@@ -1,0 +1,10 @@
+server :
+
+  port : "80"
+  
+  #address : "49.232.144.208"
+  
+  servlet :
+    context-path : "/lotus"
+    application-display-name : "lotus"
+  

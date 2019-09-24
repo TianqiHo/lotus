@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>评论列表页</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+ 
+<link href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" rel="stylesheet" />
+ 
+<link rel="stylesheet" href="/lotus/control/bootstrap/3/bootstrap/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/lotus/control/bootstrap/bootstrap-table/dist/bootstrap-table.min.css">
+
+<link rel="stylesheet" href="/lotus/control/jquery/jquery-confirm/jquery-confirm.min.css">
+
+<link rel="stylesheet" href="/lotus/control/bootstrap/bootstrap-validator/dist/css/bootstrapValidator.min.css">
+
+<link rel="stylesheet" href="/lotus/control/bootstrap/bootstrap-select/dist/css/bootstrap-select.min.css">
+
+<style type="text/css">
+.table .thead-blue th {
+	color: #fff;
+	background-color: #3195f1;
+	border-color: #0d7adf;
+}
+
+.fixed-table-header {
+	border-right: solid 1px #ddd;
+	border-top: solid 1px #ddd;
+}
+
+.fixed-table-header table {
+	border-top: solid 0px #ddd !important;
+	margin-top: -1px;
+}
+</style>
+</head>
+<body> 
+          
+   <div class="container-fluid">
+       <div class="row" style="margin-top: 5px">
+        <div class="col-lg-12">
+          <div class="panel panel-default">
+             <div class="panel-heading">
+              <span class="glyphicon glyphicon-search" style="width: 30%"></span>
+              <span class="glyphicon glyphicon-picture" style="width: 30%;text-align: center;"></span>
+              <span class=" pull-right text-primary" style="width: 30%;text-align:right;" id="title"></span></div>
+             <div class="panel-body">
+             
+               <form class="form-inline" id="searchForm">
+                  <input type="hidden" id="pageNumber" name="pageNumber" value="1"/>
+                  <input type="hidden" id="pageSize" name="pageSize" value="15"/>
+				  <div class="form-group">
+				    <label for="newsTitle2">标题</label>
+				    <input type="text" class="form-control" id="newsTitle2" name="newsTitle">
+				  </div>
+				   <div class="form-group">
+				    <label for="newsAuthor2">作者</label>
+				    <input type="text" class="form-control" id="newsAuthor2" name="newsAuthor">
+				  </div>
+				  <div class="form-group">
+				    <label for="beginTime">开始时间</label>
+				    <input type="date" class="form-control" id="beginTime" name="beginTime">
+				  </div>-
+				   <div class="form-group">
+				    <label for="endTime">结束时间</label>
+				    <input type="date" class="form-control" id="endTime" name="endTime">
+				  </div>
+				  <button type="button" id="search" class="btn btn-warning pull-right btn-md">查询</button>
+				</form>	     
+        </div>
+      </div>
+      </div>
+      </div>
+      
+      
+      <div class="row">
+         <div class="col-lg-7">
+            <div class="panel panel-default">
+                  <div class="panel-heading" style="text-align: center;">
+		                                                     列表
+		           </div>
+                 <div class="panel-body">
+                      <!-- Table -->
+			          <table id="newsTable"></table>
+                 </div>
+            </div>
+		   
+	    </div>
+	    
+	     <div class="col-lg-5">
+            <div class="panel panel-default">
+                  <div class="panel-heading" style="text-align: center;">
+		                                                     评论列表
+		           </div>
+                 <div class="panel-body">
+	                 <div id="toolbar" class="toolbar">
+					    <button type="button" class="btn btn-default btn-primary" onclick="Comment.Fn.saveOrUpdateComment(2)">审核通过
+					     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					    </button>
+					    <button type="button" class="btn btn-default btn-success" onclick="Comment.Fn.saveOrUpdateComment(3)">审核不通过
+					    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+					    </button>
+				    </div>
+                      <!-- Table -->
+			          <table id="commentTable"></table>
+                 </div>
+            </div>
+		   
+	    </div>
+      </div>
+   
+   </div>
+
+</body>
+ 
+ <script type="text/javascript" src="/lotus/control/jquery/jquery.min.js"></script>
+ 
+ <script type="text/javascript" src="/lotus/control/jquery/jquery-confirm/jquery-confirm.min.js"></script>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+ 
+ <script type="text/javascript" src="/lotus/control/bootstrap/3/bootstrap/dist/js/bootstrap.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-table/dist/bootstrap-table.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-validator/dist/js/bootstrapValidator.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-validator/dist/js/language/zh_CN.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-select/dist/js/i18n/defaults-zh_CN.min.js"></script>
+ 
+ <script type="text/javascript" src="/lotus/js/common/config.js"></script>
+ <script type="text/javascript" src="/lotus/js/common/common.js"></script>
+ <script type="text/javascript" src="/lotus/js/comment/comment.js"></script>
+</html>

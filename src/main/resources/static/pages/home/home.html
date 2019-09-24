@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>主页</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+<link href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" rel="stylesheet" />
+ 
+<link rel="stylesheet" href="/lotus/control/bootstrap/4/bootstrap/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/lotus/css/home/home.css">
+
+<style type="text/css">
+  
+  body{
+   overflow: hidden;
+  }
+ 
+</style>
+</head>
+
+<body class="bg-light">
+	<div class="row">
+	  <div class="col-md-12">
+	  
+		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+			  <a class="navbar-brand" style="color: darkorange;">荷花中烟后台</a>
+			  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			    <span class="navbar-toggler-icon"></span>
+			  </button>
+			
+			  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			    <ul class="navbar-nav mr-auto" id="navbars">
+			      <li class="nav-item">
+			        <a class="nav-link" href="/lotus/pages/home/home_logo.html" target="mainFrame">主页 </a>
+			      </li>
+			      
+			      <li class="nav-item">
+			        <a class="nav-link" href="javascript:window.location.href='/lotus/pages/banner/banner.html?moduleName='+encodeURI('轮播图管理')" target="mainFrame">轮播图(BANNER)</a>
+			      </li>
+			      
+			       <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" id="news" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">新闻资讯(NEWS)</a>
+			        <div class="dropdown-menu" aria-labelledby="news">
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/category/category.html?categoryType=NEWS_TYPE&moduleName='+encodeURI('资讯分类')" target="mainFrame">资讯分类</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/news/news.html?categoryType=NEWS_TYPE&moduleName='+encodeURI('资讯管理')"" target="mainFrame">资讯管理</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/comment/comment.html?categoryType=NEWS_TYPE&moduleName='+encodeURI('资讯评论审核')" target="mainFrame">评论审核</a>
+			        </div>
+			      </li>
+			      
+			       <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" id="bbs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">荷花论坛(BBS)</a>
+			         <div class="dropdown-menu" aria-labelledby="bbs">
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/category/category.html?categoryType=BBS_TYPE&moduleName='+encodeURI('帖子板块管理')" target="mainFrame">板块管理</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/news/news.html?categoryType=BBS_TYPE&moduleName='+encodeURI('官方发帖')" target="mainFrame">官方发帖</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/news/news_examine.html?categoryType=BBS_TYPE&moduleName='+encodeURI('帖子审核')" target="mainFrame">帖子审核</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/comment/comment.html?categoryType=BBS_TYPE&moduleName='+encodeURI('帖子评论审核')" target="mainFrame">评论审核</a>
+			        </div>
+			      </li>
+			      
+			      <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" id="museum" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">线上博物馆(MUSEUM)</a>
+			        <div class="dropdown-menu" aria-labelledby="museum">
+			          <!-- <a class="dropdown-item" href="#">作品展览</a> -->
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/category/category.html?categoryType=MUSEUM_TYPE&moduleName='+encodeURI('博物馆地区/类别管理')" target="mainFrame">博物馆地区/类别管理</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/news/news.html?categoryType=MUSEUM_TYPE&moduleName='+encodeURI('上传作品')" target="mainFrame">上传作品</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/news/news_examine.html?categoryType=MUSEUM_TYPE&moduleName='+encodeURI('作品审核')" target="mainFrame">作品审核</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/comment/comment.html?categoryType=MUSEUM_TYPE&moduleName='+encodeURI('作品评论审核')" target="mainFrame">评论审核</a>
+			        </div>
+			      </li>
+			      
+			       <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" id="shoppingMall" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">积分管理(SHOPPING)</a>
+			        <div class="dropdown-menu" aria-labelledby="shoppingMall">
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/category/category.html?categoryType=INTEGRAL_TYPE&moduleName='+encodeURI('积分类型配置')" target="mainFrame">积分类型配置</a>
+			          <a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/integral/integraltype.html?categoryType=INTEGRAL_TYPE&moduleName='+encodeURI('积分规则配置')" target="mainFrame">积分规则配置</a>
+			          <!--<a class="dropdown-item" href="javascript:window.location.href='/lotus/pages/category/category.html?categoryType=PRODUCT_CATEGORY_TYPE&moduleName='+encodeURI('商品分类')" target="mainFrame">品类管理</a>
+			           <a class="dropdown-item" href="#">商品管理</a>
+			          <a class="dropdown-item" href="#">订单管理</a> -->
+			        </div>
+			      </li>
+			      <!-- 
+			       <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" id="logistics" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">物流管理(LOGISTICS)</a>
+			        <div class="dropdown-menu" aria-labelledby=""logistics"">
+			          <a class="dropdown-item" href="#">地址管理</a>
+			          <a class="dropdown-item" href="#">物流管理</a>
+			        </div>
+			      </li>
+			       -->
+			       <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" id="basic" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">基本管理(BASIC)</a>
+			        <div class="dropdown-menu" aria-labelledby="basic">
+			          <a class="dropdown-item" href="/lotus/index.html">登陆/退出</a>
+			          <a class="dropdown-item" href="#">角色管理</a>
+			          <a class="dropdown-item" href="#">管理员管理</a>
+			          <a class="dropdown-item" href="#">参数配置</a>
+			        </div>
+			      </li>
+			      
+			      
+			    </ul>
+			    <!-- 
+			    <form class="form-inline my-2 my-lg-0">
+			      <input class="form-control mr-sm-2" type="text" placeholder="查询" aria-label="Search">
+			      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			    </form> <a class="glyphicon glyphicon-off pull-right" style="color: darkorange;"></a>
+			     -->
+			    
+			  </div>
+			</nav>
+	  
+	  </div>
+	
+	</div>
+	
+	<div class="row">
+	<!-- style="padding-right:5.5px!important;padding-left:4px!important" -->
+	    <div class="col-md-12">  
+			<div class="embed-responsive embed-responsive-21by9">
+			  <iframe class="embed-responsive-item" id="mainFrame" name="mainFrame" src="/lotus/pages/home/home_logo.html"></iframe>
+			</div>
+	    </div>
+	</div>
+	<!--  
+	<div class="row">
+	    <div class="col-md-12">  
+			<h6 style="text-align: center;">版权由我所有 </h6>
+	    </div>
+	</div>-->
+</div>
+ 
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/lotus/control/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/lotus/control/bootstrap/4/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/lotus/js/common/config.js"></script>
+<script type="text/javascript" src="/lotus/js/common/common.js"></script>
+
+</html>

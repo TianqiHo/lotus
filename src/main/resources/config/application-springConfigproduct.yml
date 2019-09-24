@@ -1,0 +1,12 @@
+spring :
+ application :
+   name : "lotus"
+ 
+ mvc :
+   view:
+     prefix: "/pages/"
+     suffix: ".html"
+ 
+ resources:
+   static-locations : file:/root/project/lotus
+   

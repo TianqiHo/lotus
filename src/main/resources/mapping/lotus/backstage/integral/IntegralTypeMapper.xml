@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.backstage.integral.mapper.IntegralTypeMapper">
+  <resultMap id="BaseResultMap" type="com.lotus.backstage.integral.model.IntegralType">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="INTEGRAL_NUM" jdbcType="INTEGER" property="integralNum" />
+    <result column="INTEGRAL_DAILY_CEILING_NUM" jdbcType="INTEGER" property="integralDailyCeilingNum" />
+    <result column="INTEGRAL_TYPE" jdbcType="BIGINT" property="integralType" />
+    <result column="INTEGRAL_NAME" jdbcType="VARCHAR" property="integralName" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="BIGINT" property="updateBy" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, INTEGRAL_NUM, INTEGRAL_TYPE, INTEGRAL_NAME, VALID, CREATE_TIME, CREATE_BY, UPDATE_TIME, 
+    UPDATE_BY, VERSION, LOG,INTEGRAL_DAILY_CEILING_NUM
+  </sql>
+  
+   <sql id="Base_Column_Lists">
+    A.ID, A.INTEGRAL_NUM, A.INTEGRAL_TYPE, A.INTEGRAL_NAME,A.VALID, A.CREATE_TIME, A.CREATE_BY, A.UPDATE_TIME, 
+    A.UPDATE_BY, A.VERSION, A.LOG,A.INTEGRAL_DAILY_CEILING_NUM
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from integral_type
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  
+  
+   <select id="selectIntegralTypes" parameterType="com.lotus.backstage.integral.model.IntegralType" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_Lists" />,
+    B.CATEGORY_NAME AS integrayTypeName
+    from integral_type A
+    INNER JOIN CATEGORY B ON A.INTEGRAL_TYPE = B.ID
+    <trim prefix="WHERE " suffixOverrides="AND">
+       <if test="id != null">
+        A.ID = #{id,jdbcType=BIGINT} AND
+      </if>
+      <if test="integralName != null and integralName !=''">
+        A.INTEGRAL_NAME Like CONCAT('%',#{integralName,jdbcType=VARCHAR},'%') AND
+      </if>
+      <if test="integralNum != null and integralNum !=''">
+        A.INTEGRAL_NUM = #{integralNum,jdbcType=INTEGER} AND
+      </if>
+     
+      <if test="valid != null">
+        A.VALID = #{valid,jdbcType=INTEGER} AND
+      </if>
+      <if test="beginTime != null">
+        DATE_FORMAT(#{beginTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AND 
+      </if>
+      <if test="createBy != null">
+       A.CREATE_BY = #{createBy,jdbcType=BIGINT} AND
+      </if>
+      <if test="updateBy != null">
+       A.UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND
+      </if>
+      <if test="endTime != null">
+        IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) &lt;= DATE_FORMAT(#{endTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') AND
+      </if>
+    </trim>
+     ORDER BY IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) DESC
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from integral_type
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.lotus.backstage.integral.model.IntegralType">
+    <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+      SELECT FUN_GET_ID()
+    </selectKey>
+    insert into integral_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="integralNum != null">
+        INTEGRAL_NUM,
+      </if>
+      <if test="integralDailyCeilingNum != null">
+        INTEGRAL_DAILY_CEILING_NUM,
+      </if>
+      <if test="integralType != null">
+        INTEGRAL_TYPE,
+      </if>
+      <if test="integralName != null">
+        INTEGRAL_NAME,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="integralNum != null">
+        #{integralNum,jdbcType=INTEGER},
+      </if>
+        <if test="integralDailyCeilingNum != null">
+         #{integralDailyCeilingNum,jdbcType=INTEGER},
+      </if>
+      <if test="integralType != null">
+        #{integralType,jdbcType=BIGINT},
+      </if>
+      <if test="integralName != null">
+        #{integralName,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.backstage.integral.model.IntegralType">
+    update integral_type
+    <set>
+      <if test="integralNum != null">
+        INTEGRAL_NUM = #{integralNum,jdbcType=INTEGER},
+      </if>
+       <if test="integralDailyCeilingNum != null">
+       INTEGRAL_DAILY_CEILING_NUM = #{integralDailyCeilingNum,jdbcType=INTEGER},
+      </if>
+      <if test="integralType != null">
+        INTEGRAL_TYPE = #{integralType,jdbcType=BIGINT},
+      </if>
+      <if test="integralName != null">
+        INTEGRAL_NAME = #{integralName,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+</mapper>

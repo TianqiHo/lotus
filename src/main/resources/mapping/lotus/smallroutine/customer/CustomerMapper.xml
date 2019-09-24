@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.smallroutine.customer.mapper.CustomerMapper">
+
+  <resultMap id="BaseResultMap" type="com.lotus.smallroutine.customer.model.Customer">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="MOBILE" jdbcType="VARCHAR" property="mobile" />
+    <result column="HEAD_PORTRAIT" jdbcType="VARCHAR" property="headPortrait" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="NICK_NAME" jdbcType="VARCHAR" property="nickName" />
+    <result column="OCCUPATION" jdbcType="VARCHAR" property="occupation" />
+    
+    <result column="WXMINIPROUNIONID" jdbcType="VARCHAR" property="wxMiniProUnionId" />
+    <result column="WXMINIPROAVATARURL" jdbcType="VARCHAR" property="wxMiniProAvatarUrl" />
+     <result column="WXMINIPROOPENID" jdbcType="VARCHAR" property="wxMiniProOpenId" />
+    
+    <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="SEX" jdbcType="INTEGER" property="sex" />
+    <result column="BRIEF_INTRODUCTION" jdbcType="VARCHAR" property="briefIntroduction" />
+    <result column="GEOGRAPHICAL_POSITION" jdbcType="VARCHAR" property="geographicalPosition" />
+    <result column="PASS_WORD" jdbcType="VARCHAR" property="passWord" />
+    <result column="ID_CARD" jdbcType="VARCHAR" property="idCard" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="CREATE_BY" jdbcType="INTEGER" property="createBy" />
+    <result column="UPDATE_BY" jdbcType="INTEGER" property="updateBy" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, USER_NAME, MOBILE, HEAD_PORTRAIT, ADDRESS, NICK_NAME, OCCUPATION, BIRTHDAY, SEX, 
+    BRIEF_INTRODUCTION, GEOGRAPHICAL_POSITION, PASS_WORD, ID_CARD, CREATE_TIME, UPDATE_TIME, 
+    CREATE_BY, UPDATE_BY, LOG, VALID,WXMINIPROUNIONID,WXMINIPROAVATARURL,WXMINIPROOPENID
+  </sql>
+  
+   
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from customer
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="selectCustomer" parameterType="com.lotus.smallroutine.customer.model.Customer" resultType="com.lotus.smallroutine.customer.model.Customer">
+     select 
+      <include refid="Base_Column_List" />
+     from customer
+   <trim prefix="WHERE " suffixOverrides="AND">
+       <if test="id != null">
+        ID = #{id,jdbcType=BIGINT} AND
+      </if>
+     
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER} AND
+      </if>
+     
+      <if test="userName != null">
+       USER_NAME = #{userName,jdbcType=VARCHAR} AND
+      </if>
+      
+       <if test="wxMiniProOpenId != null">
+          WXMINIPROOPENID = #{wxMiniProOpenId,jdbcType=BIGINT} AND
+      </if>
+    </trim>
+  </select>
+  
+  <!-- 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+   -->
+   
+  <insert id="insertSelective" parameterType="com.lotus.smallroutine.customer.model.Customer" useGeneratedKeys="true" keyProperty="id">
+    <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+      SELECT FUN_GET_ID()
+    </selectKey>
+    INSERT INTO LOTUS.CUSTOMER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="userName != null">
+        USER_NAME,
+      </if>
+      <if test="mobile != null">
+        MOBILE,
+      </if>
+      <if test="headPortrait != null">
+        HEAD_PORTRAIT,
+      </if>
+      <if test="address != null">
+        ADDRESS,
+      </if>
+      <if test="nickName != null">
+        NICK_NAME,
+      </if>
+      <if test="occupation != null">
+        OCCUPATION,
+      </if>
+      <if test="birthday != null">
+        BIRTHDAY,
+      </if>
+      <if test="sex != null">
+        SEX,
+      </if>
+      <if test="briefIntroduction != null">
+        BRIEF_INTRODUCTION,
+      </if>
+      <if test="geographicalPosition != null">
+        GEOGRAPHICAL_POSITION,
+      </if>
+      <if test="passWord != null">
+        PASS_WORD,
+      </if>
+      <if test="idCard != null">
+        ID_CARD,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+       <if test="wxMiniProUnionId != null">
+        WXMINIPROUNIONID,
+      </if>
+       <if test="wxMiniProAvatarUrl != null">
+        WXMINIPROAVATARURL,
+      </if>
+       <if test="wxMiniProOpenId != null">
+        WXMINIPROOPENID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="headPortrait != null">
+        #{headPortrait,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null">
+        #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        DATE_FORMAT(#{birthday,jdbcType=TIMESTAMP},'%Y-%m-%d'),
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="briefIntroduction != null">
+        #{briefIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="geographicalPosition != null">
+        #{geographicalPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="passWord != null">
+        #{passWord,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null">
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=INTEGER},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="wxMiniProUnionId != null">
+         #{wxMiniProUnionId,jdbcType=VARCHAR},
+      </if>
+       <if test="wxMiniProAvatarUrl != null">
+         #{wxMiniProAvatarUrl,jdbcType=VARCHAR},
+      </if>
+       <if test="wxMiniProOpenId != null">
+         #{wxMiniProOpenId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+    
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.smallroutine.customer.model.Customer">
+    update CUSTOMER
+    <set>
+      <if test="userName != null">
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        MOBILE = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="headPortrait != null">
+        HEAD_PORTRAIT = #{headPortrait,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        NICK_NAME = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null">
+        OCCUPATION = #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        BIRTHDAY = DATE_FORMAT(#{birthday,jdbcType=TIMESTAMP},'%Y-%m-%d'),
+      </if>
+      <if test="sex != null">
+        SEX = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="briefIntroduction != null">
+        BRIEF_INTRODUCTION = #{briefIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="geographicalPosition != null">
+        GEOGRAPHICAL_POSITION = #{geographicalPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="passWord != null">
+        PASS_WORD = #{passWord,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null">
+        ID_CARD = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=INTEGER},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+       <if test="wxMiniProUnionId != null">
+       WXMINIPROUNIONID =  #{wxMiniProUnionId,jdbcType=VARCHAR},
+      </if>
+       <if test="wxMiniProAvatarUrl != null">
+        WXMINIPROAVATARURL= #{wxMiniProAvatarUrl,jdbcType=VARCHAR},
+      </if>
+       <if test="wxMiniProOpenId != null">
+        WXMINIPROOPENID = #{wxMiniProOpenId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.smallroutine.fabulous.mapper.FabulousMapper">
+
+  <resultMap id="BaseResultMap" type="com.lotus.smallroutine.fabulous.model.Fabulous">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="SERVICE_ID" jdbcType="BIGINT" property="serviceId" />
+    <result column="TYPE" jdbcType="INTEGER" property="type" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, SERVICE_ID, TYPE, CREATE_TIME, CREATE_BY, VALID, VERSION, LOG
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="com.lotus.smallroutine.fabulous.model.Fabulous" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from fabulous
+    where ID = #{id,jdbcType=BIGINT}
+    
+  </select>
+  
+    <select id="selectFabulouss" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    ID AS id
+    from fabulous
+    <trim prefix="WHERE " suffixOverrides="AND">
+       <if test="id != null">
+        ID = #{id,jdbcType=BIGINT} AND
+      </if>
+     
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER} AND
+      </if>
+     
+      <if test="createBy != null">
+       CREATE_BY = #{createBy,jdbcType=BIGINT} AND
+      </if>
+      
+       <if test="serviceId != null">
+          SERVICE_ID = #{serviceId,jdbcType=BIGINT} AND
+      </if>
+      
+    
+    </trim>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from fabulous
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.lotus.smallroutine.fabulous.model.Fabulous">
+	  <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+	      SELECT FUN_GET_ID()
+	    </selectKey>
+    insert into fabulous
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="serviceId != null">
+        SERVICE_ID,
+      </if>
+      <if test="type != null">
+        TYPE,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="serviceId != null">
+        #{serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.smallroutine.fabulous.model.Fabulous">
+    update fabulous
+    <set>
+      <if test="serviceId != null">
+        SERVICE_ID = #{serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        TYPE = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  
+</mapper>

@@ -1,0 +1,28 @@
+#spring.application.name = micro-service
+#singleDatasource
+#dynamicDatasource
+spring:
+ profiles:
+  active :   dynamicDatasourceproduct,springConfigproduct,server,loggerproduct,uploadfile,lotusappproduct  #dynamicDatasource,springConfig,server,logger,devtoolsConfig,uploadfile,lotusapp,spsecurity
+  
+ 
+#指定tomcat部署后的项目访问路径
+#server.servlet.context-path = /micro-service
+#server.servlet.application-display-name = micro-service
+
+#server.port = 9090
+#server.address = 127.0.0.1
+
+#指定自定义日志
+#logging.config = classpath:logback-spring.xml
+
+#日志级别
+#logging.level.root=warn
+#logging.level.* = info
+
+#---------------------------begin---------------------------#
+#注：二者不能同时使用，如若同时使用，则只有logging.file生效
+#logging.path = D://SOFT_LOG//micro-service//1
+#logging.file=my.log
+#---------------------------end---------------------------#
+

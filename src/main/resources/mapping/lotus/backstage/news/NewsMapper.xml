@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.backstage.news.mapper.NewsMapper">
+
+  <resultMap id="BaseResultMap" type="com.lotus.backstage.news.model.News">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NEWS_TITLE" jdbcType="VARCHAR" property="newsTitle" />
+    <result column="NEWS_IMAGE" jdbcType="VARCHAR" property="newsImage" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="PLATFORM" jdbcType="INTEGER" property="platForm" />
+    <result column="SEE_SUM" jdbcType="INTEGER" property="seeSum" />
+    <result column="NEWS_AUTHOR" jdbcType="VARCHAR" property="newsAuthor" />
+    <result column="NEWS_FROM" jdbcType="VARCHAR" property="newsFrom" />
+    <result column="NEWS_TAG" jdbcType="VARCHAR" property="newsTag" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="BIGINT" property="updateBy" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+  </resultMap>
+  
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.lotus.backstage.news.model.News">
+    <result column="NEWS_CONTENT" jdbcType="LONGVARBINARY" property="newsContent" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, NEWS_TITLE, NEWS_IMAGE, NEWS_AUTHOR, NEWS_FROM, NEWS_TAG, CREATE_TIME, CREATE_BY, 
+    UPDATE_TIME, UPDATE_BY, VERSION, VALID, LOG,STATUS,SEE_SUM
+  </sql>
+  
+  <sql id="Blob_Column_List">
+    NEWS_CONTENT
+  </sql>
+  
+  <sql id="selectByPrimyKey">
+      ID, NEWS_TITLE, NEWS_IMAGE, NEWS_AUTHOR, NEWS_FROM, NEWS_TAG, CREATE_TIME, 
+    UPDATE_TIME,SEE_SUM,NEWS_CONTENT
+  </sql>
+  
+  <update id="seeSum" parameterType="com.lotus.backstage.news.model.News">
+   UPDATE NEWS SET SEE_SUM = IF(ISNULL(SEE_SUM),0,SEE_SUM)+1 WHERE ID = #{id}
+  </update>
+  
+  <select id="selectNwess" resultType="com.lotus.backstage.news.model.News" parameterType="com.lotus.backstage.news.model.News">
+    SELECT 
+     A.ID AS id,
+     A.NEWS_CONTENT AS newsContent,
+     A.NEWS_TITLE AS newsTitle,
+     A.NEWS_IMAGE AS newsImage,
+     A.NEWS_AUTHOR AS newsAuthor,
+     A.NEWS_FROM AS newsFrom,
+     A.NEWS_TAG AS newsTag,
+     A.CREATE_TIME AS createTime,
+     A.CREATE_BY AS createBy,
+     A.UPDATE_TIME AS updateTime,
+     A.UPDATE_BY AS updateBy,
+     A.VALID AS valid,
+     A.STATUS AS status,
+     GROUP_CONCAT(C.CATEGORY_NAME SEPARATOR ',') AS categoryNames 
+    FROM NEWS A
+    LEFT JOIN NEWS2CATEGORY B ON A.ID = B.NEWS_ID
+    LEFT JOIN CATEGORY C ON B.CATEGORY_ID = C.ID
+     
+    <trim prefix=" WHERE "  suffixOverrides=" AND ">
+      <if test="id != null">
+        A.ID = #{id,jdbcType=BIGINT} AND 
+      </if>
+      <if test="platForm != null">
+       A.PLATFORM = #{platForm,jdbcType=INTEGER} AND
+      </if>
+       <if test="categoryType != null and categoryType !=''">
+         C.CATEGORY_TYPE = #{categoryType,jdbcType=VARCHAR} AND
+      </if>
+      <if test="newsTitle != null">
+        A.NEWS_TITLE LIKE CONCAT('%',#{newsTitle,jdbcType=VARCHAR},'%') AND 
+      </if>
+      <if test="newsAuthor != null">
+        A.NEWS_AUTHOR LIKE CONCAT('%',#{newsAuthor,jdbcType=VARCHAR},'%') AND 
+      </if>
+      <if test="newsFrom != null">
+        A.NEWS_FROM LIKE CONCAT('%',#{newsFrom,jdbcType=VARCHAR},'%')  AND 
+      </if>
+      <if test="newsTag != null">
+        A.NEWS_TAG LIKE CONCAT('%',#{newsTag,jdbcType=VARCHAR},'%') AND 
+      </if>
+       <if test="beginTime != null">
+        DATE_FORMAT(#{beginTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AND 
+      </if>
+      <if test="createBy != null">
+        A.CREATE_BY = #{createBy,jdbcType=BIGINT} AND 
+      </if>
+       <if test="endTime != null">
+        DATE_FORMAT(#{endTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AND 
+      </if>
+      <if test="updateBy != null">
+        A.UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND 
+      </if>
+      <if test="valid != null">
+        A.VALID = #{valid,jdbcType=INTEGER} AND 
+      </if>
+       <if test="status != null">
+        A.STATUS = #{status,jdbcType=INTEGER} AND 
+      </if>
+    </trim>
+     GROUP BY A.ID ORDER BY IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) DESC
+  </select>
+  
+  <select id="selectClientNewss" resultType="com.lotus.backstage.news.model.News" parameterType="com.lotus.backstage.news.model.News">
+     SELECT
+		A.ID AS id,
+		A.NEWS_TITLE AS newsTitle,
+		A.NEWS_IMAGE AS newsImage,
+		A.NEWS_AUTHOR AS newsAuthor,
+		A.NEWS_FROM AS newsFrom,
+		A.NEWS_TAG AS newsTag,
+		IF (ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AS createTime,
+		A.VALID AS valid,
+		A. STATUS AS STATUS,
+		GROUP_CONCAT(
+			C.CATEGORY_NAME SEPARATOR ','
+		) AS categoryNames,
+	    A.SEE_SUM AS seeSum,
+	    COUNT(DISTINCT E.ID) AS commentCount
+	    <if test="categoryType == 'BBS_TYPE'">
+	    ,IF(ISNULL(D.ID),'官方发帖',D.NICK_NAME) AS createByName,
+        IF(ISNULL(D.HEAD_PORTRAIT),'/lotus/logo.png',D.HEAD_PORTRAIT) AS headPortrait
+        </if>
+	FROM
+		NEWS A
+	LEFT JOIN NEWS2CATEGORY B ON A.ID = B.NEWS_ID
+	LEFT JOIN CATEGORY C ON B.CATEGORY_ID = C.ID
+	 <if test="categoryType == 'BBS_TYPE'">
+		   LEFT JOIN CUSTOMER D ON D.ID = A.CREATE_BY
+     </if>
+     LEFT JOIN COMMENT E ON E.ARTICAL_ID = A.ID
+	<trim prefix=" WHERE "  suffixOverrides=" AND ">
+	      <if test="id != null">
+	        A.ID = #{id,jdbcType=BIGINT} AND 
+	      </if>
+	       <if test="categoryId != null">
+	        C.id = #{categoryId,jdbcType=BIGINT} AND B.CATEGORY_ID=#{categoryId,jdbcType=BIGINT} AND
+	      </if>
+	       <if test="platForm != null">
+	        A.PLATFORM = #{platForm,jdbcType=INTEGER} AND
+	      </if>
+	       <if test="categoryType != null and categoryType !=''">
+	         C.CATEGORY_TYPE = #{categoryType,jdbcType=VARCHAR} AND
+	      </if>
+	      <if test="newsTitle != null">
+	        A.NEWS_TITLE LIKE CONCAT('%',#{newsTitle,jdbcType=VARCHAR},'%') AND 
+	      </if>
+	      <if test="newsAuthor != null">
+	        A.NEWS_AUTHOR LIKE CONCAT('%',#{newsAuthor,jdbcType=VARCHAR},'%') AND 
+	      </if>
+	      <if test="newsFrom != null">
+	        A.NEWS_FROM LIKE CONCAT('%',#{newsFrom,jdbcType=VARCHAR},'%')  AND 
+	      </if>
+	      <if test="newsTag != null">
+	        A.NEWS_TAG LIKE CONCAT('%',#{newsTag,jdbcType=VARCHAR},'%') AND 
+	      </if>
+	       <if test="beginTime != null">
+	        DATE_FORMAT(#{beginTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AND 
+	      </if>
+	      <if test="createBy != null">
+	        A.CREATE_BY = #{createBy,jdbcType=BIGINT} AND 
+	      </if>
+	       <if test="endTime != null">
+	        DATE_FORMAT(#{endTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AND 
+	      </if>
+	      <if test="updateBy != null">
+	        A.UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND 
+	      </if>
+	      <if test="valid != null">
+	        A.VALID = #{valid,jdbcType=INTEGER} AND 
+	      </if>
+	       <if test="status != null">
+	        A.STATUS = #{status,jdbcType=INTEGER} AND 
+	      </if>
+	    </trim>
+	     GROUP BY A.ID ORDER BY IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) DESC
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.backstage.news.model.News">
+    update news
+    <set>
+      <if test="newsTitle != null">
+        NEWS_TITLE = #{newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="newsImage != null">
+        NEWS_IMAGE = #{newsImage,jdbcType=VARCHAR},
+      </if>
+      <if test="newsAuthor != null">
+        NEWS_AUTHOR = #{newsAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="newsFrom != null">
+        NEWS_FROM = #{newsFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="newsTag != null">
+        NEWS_TAG = #{newsTag,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+       <if test="platForm != null">
+        PLATFORM = #{platForm,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="newsContent != null">
+        NEWS_CONTENT = #{newsContent,jdbcType=LONGVARBINARY},
+      </if>
+       <if test="status != null">
+        STATUS = #{status,jdbcType=INTEGER}, 
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectMyFollows" resultType="com.lotus.backstage.news.model.News" parameterType="com.lotus.smallroutine.follow.model.Follow">
+      SELECT 
+		 B.ID AS id,
+		 B.NEWS_TITLE AS newsTitle,
+		 B.SEE_SUM AS seeSum,
+		 B.NEWS_IMAGE AS newsImage,
+		 SUBSTR(B.NEWS_CONTENT, 1, 100) AS newsContent,
+		 COUNT(DISTINCT C.ID) AS commentCount
+		 <if test="followType==2">
+		  ,IF(ISNULL(D.ID),'官方发帖',D.NICK_NAME) AS createByName,
+          IF(ISNULL(D.HEAD_PORTRAIT),'/lotus/logo.png',D.HEAD_PORTRAIT) AS headPortrait
+		 </if> 
+		
+		FROM FOLLOW A 
+		INNER JOIN NEWS B ON A.SERCICE_ID = B.ID
+		LEFT JOIN COMMENT C ON C.ARTICAL_ID = B.ID AND C.CATEGORY_TYPE = #{categoryType}
+		 <if test="followType==2">
+		   LEFT JOIN CUSTOMER D ON D.ID = B.CREATE_BY
+		 </if>
+		WHERE A.CREATE_BY = #{createBy} 
+		AND A.FOLLOW_TYPE = #{followType} 
+		GROUP BY B.ID
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="selectByPrimyKey" />
+    from news
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  
+   <select id="selectNewsAndIsFollow" resultType="com.lotus.backstage.news.model.News">
+    select 
+     A.ID AS id,
+     A.NEWS_TITLE AS newsTitle, 
+     A.NEWS_IMAGE AS newsImage, 
+     IF(ISNULL(A.NEWS_AUTHOR),C.NICK_NAME,A.NEWS_AUTHOR) AS newsAuthor, 
+     A.NEWS_FROM AS newsFrom, 
+     A.NEWS_TAG AS newsTag,
+     A.CREATE_TIME AS createTime, 
+     A.SEE_SUM AS seeSum,
+     A.NEWS_CONTENT AS newsContent,
+     B.ID AS followId 
+    from news A
+    LEFT JOIN FOLLOW B ON A.ID=B.SERCICE_ID AND B.CREATE_BY=#{createBy,jdbcType=BIGINT}
+    LEFT JOIN CUSTOMER C ON A.CREATE_BY = C.ID AND C.ID = #{createBy,jdbcType=BIGINT}
+    where A.ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from news
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  
+ 
+  <insert id="insertSelective" parameterType="com.lotus.backstage.news.model.News" useGeneratedKeys="true" keyProperty="id">
+    <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+      SELECT FUN_GET_ID()
+    </selectKey>
+    insert into news
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+       <if test="platForm != null">
+        PLATFORM,
+      </if>
+      <if test="newsTitle != null">
+        NEWS_TITLE,
+      </if>
+      <if test="newsImage != null">
+        NEWS_IMAGE,
+      </if>
+      <if test="newsAuthor != null">
+        NEWS_AUTHOR,
+      </if>
+      <if test="newsFrom != null">
+        NEWS_FROM,
+      </if>
+      <if test="newsTag != null">
+        NEWS_TAG,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+      <if test="newsContent != null">
+        NEWS_CONTENT,
+      </if>
+        <if test="status != null">
+        STATUS, 
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="platForm != null">
+        #{platForm,jdbcType=INTEGER},
+      </if>
+      <if test="newsTitle != null">
+        #{newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="newsImage != null">
+        #{newsImage,jdbcType=VARCHAR},
+      </if>
+      <if test="newsAuthor != null">
+        #{newsAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="newsFrom != null">
+        #{newsFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="newsTag != null">
+        #{newsTag,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="newsContent != null">
+        #{newsContent,jdbcType=LONGVARBINARY},
+      </if>
+        <if test="status != null">
+        #{status,jdbcType=INTEGER}, 
+      </if>
+    </trim>
+  </insert>
+  
+</mapper>

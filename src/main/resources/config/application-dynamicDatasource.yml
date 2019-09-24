@@ -1,0 +1,39 @@
+#数据源配置（默认）
+#useSSL=false MySQL在高版本需要指明是否进行SSL连接（不加第一次连接数据库会有警告信息）
+spring : 
+ datasource : 
+   driver : "com.mysql.jdbc.Driver"
+   url : "jdbc:mysql://localhost:3306/lotus?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=GMT%2B8"
+   username : "root"
+   password : "root"
+   
+   
+#ds1,ds2 其他两个数据源
+other : 
+ datasource :
+   names : ds1,ds2
+ datasources :   
+   - ds1 : 
+       driver : "com.mysql.jdbc.Driver"
+       url : "jdbc:mysql://localhost:3306/lotus?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=GMT%2B8"
+       username : "root"
+       password : "root"
+   - ds2 : 
+       driver : "com.mysql.jdbc.Driver"
+       url : "jdbc:mysql://localhost:3306/lotus?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=GMT%2B8"
+       username : "root"
+       password : "root"
+
+mybatis:
+  #typeAliasesPackage : com.hetianqi.singledatabase.sb1.model
+  mapper-locations: classpath:mapping/lotus/*/*/*.xml
+
+#pagehelper
+pagehelper:
+  helperDialect: mysql
+  #  分页参数合理化，默认false禁用 .启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
+  #  用合理化时，如果pageNum<1或pageNum>pages会返回空数据
+  reasonable: true
+  supportMethodsArguments: true
+  # 设置为true时，使用RowBounds分页会进行count查询 .默认=false
+  rowBoundsWithCount: true

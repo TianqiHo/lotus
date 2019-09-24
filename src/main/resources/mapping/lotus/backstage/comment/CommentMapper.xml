@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.backstage.comment.mapper.CommentMapper">
+
+  <resultMap id="BaseResultMap" type="com.lotus.backstage.comment.model.Comment">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="ARTICAL_ID" jdbcType="BIGINT" property="articalId" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="FABULOUS_SUM" jdbcType="INTEGER" property="fabulousSum" />
+    <result column="CATEGORY_TYPE" jdbcType="VARCHAR" property="categoryType" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_BY" jdbcType="BIGINT" property="updateBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+  </resultMap>
+  
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.lotus.backstage.comment.model.Comment">
+    <result column="SAY_WHAT" jdbcType="LONGVARBINARY" property="sayWhat" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, ARTICAL_ID,STATUS, CATEGORY_TYPE, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, VALID,FABULOUS_SUM, 
+    VERSION, LOG
+  </sql>
+  
+  <sql id="Blob_Column_List">
+    SAY_WHAT
+  </sql>
+  
+  <update id="fabulousSum">
+     UPDATE COMMENT SET FABULOUS_SUM = IF(ISNULL(FABULOUS_SUM),0,FABULOUS_SUM)+1 WHERE ID = #{id} 
+  </update>
+  
+  <update id="cancleFabulousSum">
+     UPDATE COMMENT SET 
+     FABULOUS_SUM = FABULOUS_SUM-1 
+     WHERE ID = #{id} 
+  </update>
+  
+  <select id="selectTodayCountEveryBody" parameterType="com.lotus.backstage.comment.model.Comment" resultType="Integer">
+    SELECT COUNT(0) FROM COMMENT A WHERE A.CATEGORY_TYPE = #{categoryType} AND A.CREATE_BY=#{createBy} AND DATE_FORMAT(A.CREATE_TIME,'%Y-%m-%d') = DATE_FORMAT(#{beginTime},'%Y-%m-%d')
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from comment
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectComments" parameterType="com.lotus.backstage.comment.model.Comment" 
+                resultType="com.lotus.backstage.comment.model.Comment">
+  SELECT
+   A.ID AS id, 
+   A.ARTICAL_ID AS articalId, 
+   IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AS createTime,
+   IF(ISNULL(B.USER_NAME),B.MOBILE,B.USER_NAME) AS createByName,
+   A.SAY_WHAT AS sayWhat1,
+   A.STATUS AS status,
+   A.EXAMINE_TIME AS examineTime,
+   IF(ISNULL(C.USER_NAME),C.MOBILE,C.USER_NAME) AS examineByName
+   
+   FROM COMMENT A
+   LEFT JOIN CUSTOMER B ON A.CREATE_BY = B.ID
+   LEFT JOIN USER C ON A.EXAMINE_BY = C.ID 
+   
+   <trim prefix=" WHERE "  suffixOverrides=" AND ">
+      <if test="articalId != null">
+        A.ARTICAL_ID = #{articalId,jdbcType=BIGINT} AND
+      </if>
+      <if test="categoryType != null">
+        A.CATEGORY_TYPE = #{categoryType,jdbcType=VARCHAR} AND 
+      </if>
+      <if test="valid != null">
+       A.VALID = #{valid,jdbcType=INTEGER} AND 
+      </if>
+   </trim>
+  
+  </select>
+  
+   <select id="selectClientComments" parameterType="com.lotus.backstage.comment.model.Comment" 
+                resultType="com.lotus.backstage.comment.model.Comment">
+   SELECT
+   A.ID AS id, 
+   A.ARTICAL_ID AS articalId, 
+   IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AS createTime,
+   IF(ISNULL(B.NICK_NAME),B.MOBILE,B.NICK_NAME) AS createByName,
+   A.SAY_WHAT AS sayWhat1,
+   C.ID AS fabulousId,
+   A.FABULOUS_SUM AS fabulousSum,
+   B.HEAD_PORTRAIT AS headPortrait
+   FROM COMMENT A
+   LEFT JOIN CUSTOMER B ON A.CREATE_BY = B.ID
+   LEFT JOIN fabulous C ON C.SERVICE_ID = A.ID  
+   <if test="createBy != null">
+        AND C.CREATE_BY = #{createBy,jdbcType=BIGINT}
+   </if>
+   <trim prefix=" WHERE "  suffixOverrides=" AND ">
+      <if test="articalId != null">
+        A.ARTICAL_ID = #{articalId,jdbcType=BIGINT} AND
+      </if>
+      <if test="categoryType != null">
+        A.CATEGORY_TYPE = #{categoryType,jdbcType=VARCHAR} AND 
+      </if>
+      <if test="valid != null">
+       A.VALID = #{valid,jdbcType=INTEGER} AND 
+      </if>
+   </trim>
+   ORDER BY IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from comment
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+ 
+  <insert id="insertSelective" parameterType="com.lotus.backstage.comment.model.Comment" useGeneratedKeys="true" keyProperty="id">
+  <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+      SELECT FUN_GET_ID()
+    </selectKey>
+    insert into comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="articalId != null">
+        ARTICAL_ID,
+      </if>
+       <if test="status != null">
+        STATUS,
+      </if>
+      <if test="categoryType != null">
+        CATEGORY_TYPE,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+      <if test="sayWhat != null">
+        SAY_WHAT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="articalId != null">
+        #{articalId,jdbcType=BIGINT},
+      </if>
+        <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="categoryType != null">
+        #{categoryType,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="sayWhat != null">
+        #{sayWhat,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.backstage.comment.model.Comment">
+    update comment
+    <set>
+      <if test="articalId != null">
+        ARTICAL_ID = #{articalId,jdbcType=BIGINT},
+      </if>
+       <if test="examineBy != null">
+        EXAMINE_BY = #{examineBy,jdbcType=BIGINT},
+      </if>
+       <if test="examineTime != null">
+        EXAMINE_TIME = #{examineTime,jdbcType=BIGINT},
+      </if>
+       <if test="status != null">
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="categoryType != null">
+        CATEGORY_TYPE = #{categoryType,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="sayWhat != null">
+        SAY_WHAT = #{sayWhat,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.backstage.integral.mapper.IntegralMapper">
+  <resultMap id="BaseResultMap" type="com.lotus.backstage.integral.model.Integral">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="INTEGRAL" jdbcType="INTEGER" property="integral" />
+    <result column="INTEGRAL_TYPE_ID" jdbcType="INTEGER" property="integralTypeId" />
+    <result column="SERVICE_ID" jdbcType="INTEGER" property="serviceId" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, INTEGRAL, INTEGRAL_TYPE_ID, CREATE_BY, CREATE_TIME, VALID, LOG, VERSION,SERVICE_ID
+  </sql>
+  
+  <select id="selectIntegral" parameterType="com.lotus.backstage.integral.model.Integral" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from integral
+     <trim prefix="WHERE " suffixOverrides="AND">
+       <if test="id != null">
+        ID = #{id,jdbcType=BIGINT} AND
+      </if>
+      <if test="serviceId != null and serviceId !=''">
+        SERVICE_ID = #{serviceId,jdbcType=BIGINT} AND
+      </if>
+      
+        <if test="integralTypeId != null and integralTypeId !=''">
+        INTEGRAL_TYPE_ID = #{integralTypeId,jdbcType=BIGINT} AND
+      </if>
+    
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER} AND
+      </if>
+      <if test="createBy != null">
+       CREATE_BY = #{createBy,jdbcType=BIGINT} AND
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND
+      </if>
+       <if test="beginTime != null">
+        DATE_FORMAT(CREATE_TIME,'%Y-%m-%d') = DATE_FORMAT(#{beginTime},'%Y-%m-%d')
+      </if>
+
+    </trim>
+  </select>
+  
+  <select id="selectIntegrals" parameterType="com.lotus.backstage.integral.model.Integral" resultType="com.lotus.backstage.integral.model.Integral">
+  select 
+    A.ID AS id,
+    A.INTEGRAL AS integral,
+    A.CREATE_TIME AS createTime,
+   CONCAT(
+		B.INTEGRAL_NAME,
+    '[每次送',
+     b.INTEGRAL_NUM,
+     '分]',
+		'[每日上限',
+		B.INTEGRAL_DAILY_CEILING_NUM,
+		']'
+	) AS integralName
+    from integral a
+    inner join integral_type b on a.integral_type_id = b.id
+     <trim prefix="WHERE " suffixOverrides="AND" >
+       <if test="id != null">
+        a.ID = #{id,jdbcType=BIGINT} AND
+      </if>
+      <if test="serviceId != null and serviceId !=''">
+        a.SERVICE_ID = #{serviceId,jdbcType=INTEGER} AND
+      </if>
+      <if test="valid != null">
+        a.VALID = #{valid,jdbcType=INTEGER} AND
+      </if>
+      <if test="createBy != null">
+       a.CREATE_BY = #{createBy,jdbcType=BIGINT} AND
+      </if>
+      <if test="updateBy != null">
+        a.UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND
+      </if>
+
+    </trim>
+     ORDER BY A.CREATE_TIME DESC
+  </select>
+  
+  
+  <select id="todayShareNewsCountByCategory" resultType="INTEGER">
+    
+		SELECT COUNT(0)
+		FROM INTEGRAL A 
+		INNER JOIN(
+					SELECT A.ID FROM NEWS A
+					INNER JOIN NEWS2CATEGORY B ON A.ID=B.NEWS_ID 
+					INNER JOIN CATEGORY C ON C.ID = B.CATEGORY_ID
+					WHERE C.CATEGORY_TYPE = #{categoryType}
+					GROUP BY A.ID
+		)B ON A.SERVICE_ID = B.ID AND A.CREATE_BY=#{createBy} AND DATE_FORMAT(A.CREATE_TIME,'%Y-%m-%d') = DATE_FORMAT(#{beginTime},'%Y-%m-%d')
+		  
+  </select>
+  
+  
+  
+  <select id="selectIntegralDetail" parameterType="java.lang.Long" resultType="java.util.Map">
+  
+	SELECT SUM(A.INTEGRAL),B.INTEGRAL_NAME
+		FROM INTEGRAL A 
+		INNER JOIN INTEGRAL_TYPE B ON A.INTEGRAL_TYPE_ID = B.ID
+		WHERE A.CREATE_BY = #{createBy}
+		GROUP BY A.INTEGRAL_TYPE_ID
+  </select>
+  
+  <select id="selectIntegralSum" parameterType="java.lang.Long" resultType="Integer">
+  
+	SELECT SUM(A.INTEGRAL) FROM INTEGRAL A  WHERE A.CREATE_BY = #{createBy}	GROUP BY A.CREATE_BY
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from integral
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  
+  <insert id="insertSelective" parameterType="com.lotus.backstage.integral.model.Integral">
+    <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+      SELECT FUN_GET_ID()
+    </selectKey>
+    insert into integral
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="integral != null">
+        INTEGRAL,
+      </if>
+      <if test="integralTypeId != null">
+        INTEGRAL_TYPE_ID,
+      </if>
+      <if test="serviceId != null">
+        SERVICE_ID,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="integral != null">
+        #{integral,jdbcType=INTEGER},
+      </if>
+      <if test="integralTypeId != null">
+        #{integralTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceId != null">
+        #{serviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.backstage.integral.model.Integral">
+    update integral
+    <set>
+      <if test="integral != null">
+        INTEGRAL = #{integral,jdbcType=INTEGER},
+      </if>
+      <if test="integralType != null">
+        INTEGRAL_TYPE_ID = #{integralTypeId,jdbcType=VARCHAR},
+      </if>
+       <if test="serviceId != null">
+       SERVICE_ID = #{serviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+ 
+</mapper>

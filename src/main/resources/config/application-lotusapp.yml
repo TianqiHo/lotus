@@ -1,0 +1,23 @@
+lotus :
+ chkdsk : D:\
+ defaultUploadPath : \lotus\upload
+ server : 1
+ jwt : 
+   tokenName : LOTUS
+   secret : LOTUS
+   expiresAt : 2592000000 #3600000
+   issuer : LOTUS
+   subject : LOTUS
+   notBefore : 120
+   #issuedAt : 
+ 
+ wechat :
+  minipro :
+   jscode2sessionApi : https://api.weixin.qq.com/sns/jscode2session
+   appId : wx62840280b0f0b6a9
+   secret : 797d38ad0b6040002aa6d7e8110c1695
+   grantType : authorization_code
+   expires : 86400
+ 
+ defaultBackstageUserPassword : 123
+ 
