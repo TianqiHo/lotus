@@ -32,6 +32,7 @@ import com.lotus.smallroutine.customer.model.Customer;
 		"/clientFabulous/*",
 		"/clientIntegral/*",
 		"/clientNews/*",
+		"/customer/selectCustomer",
 		},filterName = "wxMiniLoginer")
 public class WxMiniLoginer extends AbstractLogger implements Filter,Loginer{
 

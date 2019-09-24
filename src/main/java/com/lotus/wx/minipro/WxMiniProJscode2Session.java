@@ -44,7 +44,7 @@ public class WxMiniProJscode2Session extends AbstractLogger{
 	        		wxMiniProConfigAttribute.getSecret(),
 	                wxMiniProConfigAttribute.getGrantType(),
 	                code);*/
-	        this.logger.info("请求结果是-----》{}",response);
+	        this.logger.info("请求session2code结果是-----》{}",response);
 	        ObjectReader reader = objectMapper.readerFor(WxMiniProAuthCodeResponse.class);
 	        WxMiniProAuthCodeResponse res = reader.readValue(response);
 	        res.setExpiresIn(res.getExpiresIn() != null ? res.getExpiresIn() : wxMiniProConfigAttribute.getExpires());

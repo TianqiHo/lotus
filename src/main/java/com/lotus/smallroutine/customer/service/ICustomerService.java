@@ -20,4 +20,6 @@ public interface ICustomerService {
 
 	Message isSignIn(Integral integral)throws Exception;
 
+	Message updateWxCustomer(Customer customer)throws Exception;
+
 }

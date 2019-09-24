@@ -1,8 +1,5 @@
 package com.lotus.smallroutine.customer.controller;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,5 +111,23 @@ public class CustomerController extends BaseController<Customer>{
 		printResult(message);
 		return message;
 	}
+	
+	@ClientRequireLogin
+	@RequestMapping(method = {RequestMethod.POST,RequestMethod.GET},value = "/updateWxCustomer")
+	public Message updateWxCustomer(@RequestBody Customer customer) {
+		this.logger.info("-----------updateWxCustomer()开始执行--------------");
+		
+		Message message = null;
+
+		try {
+			message = customerService.updateWxCustomer(customer);
+		} catch (Exception e) {
+			message=setException(message, e, "updateWxCustomer()");
+		}
+		this.logger.info("-----------updateWxCustomer()执行结束--------------");
+		printResult(message);
+		return message;
+	}
+
 	
 }
