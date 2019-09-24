@@ -3,7 +3,7 @@
 #dynamicDatasource
 spring:
  profiles:
-  active :   dynamicDatasourceproduct,springConfigproduct,server,loggerproduct,uploadfile,lotusappproduct  #dynamicDatasource,springConfig,server,logger,devtoolsConfig,uploadfile,lotusapp,spsecurity
+  active :  dynamicDatasource,springConfig,server,logger,devtoolsConfig,uploadfile,lotusapp,spsecurity  #dynamicDatasourceproduct,springConfigproduct,server,loggerproduct,uploadfile,lotusappproduct
   
  
 #指定tomcat部署后的项目访问路径
