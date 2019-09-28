@@ -199,36 +199,42 @@ public class CustomerServiceImpl extends AbstractService implements ICustomerSer
 				return message;
 			}
 			
-			WxMiniProAuthCodeResponse wxMiniProAuthCodeResponse = wxMiniProJscode2Session.getWxSession(customer.getWxMiniProCode());
-			Customer wxCustomerParam = new Customer();
-			wxCustomerParam.setWxMiniProOpenId(wxMiniProAuthCodeResponse.getOpenid());
-			Customer wxCustomer = customerMapper.selectCustomer(wxCustomerParam);
-			
-			if(null==wxCustomer) {
-				Map<String,Object> userInfoMap = wxMiniProDecodeUserInfo.getUserInfo(
-						customer.getWxMiniProEncrypteData(), 
-						wxMiniProAuthCodeResponse.getSession_key(),
-						customer.getWxMiniProIv());
-				if(null==userInfoMap) {
-					throw new BaseException("解密用户信息无效");
-				}
-				readWxUserInfoMap(userInfoMap, wxCustomerParam);
-				wxCustomerParam.buildCreateDefaultValue();
-				customerMapper.insertSelective(wxCustomerParam);
-			}else {
-				//wxCustomerParam.setId(CurrentWxMiniCustomer.obtainCustomerID());
-				//customerMapper.updateByPrimaryKeySelective(wxCustomerParam);
-			}
 			
 			try {
-				String token = jwtUtil.generateToken(wxCustomerParam.getId(),objectMapper.writeValueAsString(wxCustomerParam));
+				
+				WxMiniProAuthCodeResponse wxMiniProAuthCodeResponse = wxMiniProJscode2Session.getWxSession(customer.getWxMiniProCode());
+				Customer wxCustomerParam = new Customer();
+				wxCustomerParam.setWxMiniProOpenId(wxMiniProAuthCodeResponse.getOpenid());
+				Customer wxCustomer = customerMapper.selectCustomer(wxCustomerParam);
+				String token = null;
+				if(null==wxCustomer) {
+					Map<String,Object> userInfoMap = wxMiniProDecodeUserInfo.getUserInfo(
+							customer.getWxMiniProEncrypteData(), 
+							wxMiniProAuthCodeResponse.getSession_key(),
+							customer.getWxMiniProIv());
+					if(null==userInfoMap) {
+						throw new BaseException("解密用户信息无效");
+					}
+					readWxUserInfoMap(userInfoMap, wxCustomerParam);
+					wxCustomerParam.buildCreateDefaultValue();
+					customerMapper.insertSelective(wxCustomerParam);
+					token = jwtUtil.generateToken(wxCustomerParam.getId(),objectMapper.writeValueAsString(wxCustomerParam));
+				}else {
+					//wxCustomerParam.setId(CurrentWxMiniCustomer.obtainCustomerID());
+					//customerMapper.updateByPrimaryKeySelective(wxCustomerParam);
+				}				
+				
+				if(token==null && wxCustomer!=null) {
+					token = jwtUtil.generateToken(wxCustomer.getId(),objectMapper.writeValueAsString(wxCustomer));
+				}else {
+					throw new BaseException("生成token失败");
+				}
+				
 				message = this.iMessage.buildLoginSuccessMessage();
-				Map<String,Object> tokenMap = new HashMap<String,Object>(2) {{
-					put("LOTUS",token);
-					put("id",(wxCustomer==null?wxCustomerParam.getId():wxCustomer.getId()));
-					//put("wxSessionKey",wxMiniProAuthCodeResponse.getSessionKey());
-				}};
-				message.setData(tokenMap);
+				Map<String,Object> tokenDataMap = new HashMap<String,Object>(2);
+				tokenDataMap.put("LOTUS",token);
+				tokenDataMap.put("id",(wxCustomer==null?wxCustomerParam.getId():wxCustomer.getId()));
+				message.setData(tokenDataMap);
 			} catch (JsonProcessingException e1) {
 				throw new BaseException(e1);
 			}

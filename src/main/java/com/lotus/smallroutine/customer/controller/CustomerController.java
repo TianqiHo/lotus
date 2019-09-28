@@ -15,6 +15,7 @@ import com.lotus.smallroutine.customer.service.ICustomerService;
 
 @RestController
 @RequestMapping("customer")
+@ClientRequireLogin(require = false,excludeMethodName = {"login"})
 public class CustomerController extends BaseController<Customer>{
 
 	@Autowired

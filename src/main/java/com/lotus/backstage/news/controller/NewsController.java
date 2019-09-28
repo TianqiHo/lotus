@@ -16,6 +16,7 @@ import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
 @RestController
 @RequestMapping("news")
+@ServerRequireLogin(excludeUriNames = {"selectNewss","deleteNewss","selectNews"},require = false)
 public class NewsController extends BaseController<News>{
 
 	@Override

@@ -13,9 +13,11 @@ import com.lotus.backstage.user.model.User;
 import com.lotus.backstage.user.service.IUserService;
 import com.lotus.core.base.basecontroller.BaseController;
 import com.lotus.core.base.returnmessage.Message;
+import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
 @RestController
 @RequestMapping("user")
+@ServerRequireLogin(excludeUriNames = {"login","saveOrUpdateUser"},require = false)
 public class UserController extends BaseController<User>{
 
 	@Autowired
@@ -63,4 +65,19 @@ public class UserController extends BaseController<User>{
 		return message;
 	}
 	
+	@RequestMapping(method = {RequestMethod.POST,RequestMethod.GET},value = "/obtainUsetInfo")
+	public Message obtainUsetInfo(HttpServletResponse response) {
+		this.logger.info("-----------obtainUsetInfo()开始执行--------------");
+		Message message=null;
+		
+		try {
+			
+		} catch (Exception e) {
+			message=setException(message, e, "obtainUsetInfo()");
+		}
+		
+		this.logger.info("-----------obtainUsetInfo()执行结束--------------");
+		printResult(message);
+		return message;
+	}
 }

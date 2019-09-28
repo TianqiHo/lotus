@@ -24,7 +24,6 @@
 						type:'POST',
 						url:Config.requestContextPath+'/news/selectNewss',
 						data:JSON.stringify(data),
-						timeout:2000,
 						dataType:'JSON',
 						contentType:'application/json',
 						success:function(result,status,xhr){

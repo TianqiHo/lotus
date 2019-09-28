@@ -16,6 +16,7 @@ import com.lotus.core.jwt.annotation.ClientRequireLogin;
 
 @RestController
 @RequestMapping("clientNews")
+@ClientRequireLogin(require = false,excludeMethodName = {"selectNewss"})
 public class ClientNewsController extends BaseController<News>{
 
 	@Override
@@ -144,6 +145,24 @@ public class ClientNewsController extends BaseController<News>{
 			message=setException(message, e, "shareNews()");
 		}
 		this.logger.info("-----------shareNews()执行结束--------------");
+		this.logger.info("结果是{}",message.toString());
+		return message;
+	}
+	
+	@ClientRequireLogin
+	@RequestMapping(method = {RequestMethod.POST,RequestMethod.GET},value = "/fabulousNews")
+	public Message fabulousNews(@RequestBody News news) {
+		this.logger.info("-----------fabulousNews()开始执行--------------");
+		this.logger.info("参数是{}",news.toString());
+		
+		Message message = null;
+
+		try {
+			message = newsService.fabulousNews(news);
+		} catch (Exception e) {
+			message=setException(message, e, "fabulousNews()");
+		}
+		this.logger.info("-----------fabulousNews()执行结束--------------");
 		this.logger.info("结果是{}",message.toString());
 		return message;
 	}

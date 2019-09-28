@@ -63,7 +63,6 @@ public class ClientCommentController extends BaseController<Comment> {
 		Message message = null;
 
 		try {
-			
 			if(StringUtils.isEmpty(json.getId())) {
 				json.setCreateBy(CurrentWxMiniCustomer.obtainCustomerID());
 			}else {

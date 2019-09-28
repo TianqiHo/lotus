@@ -50,6 +50,26 @@ public class News extends BaseModel {
     
     private Long followId;
     
+    private Integer fabulousSum;
+    
+    private Long fabulousNewsId;
+    
+	public Long getFabulousNewsId() {
+		return fabulousNewsId;
+	}
+
+	public void setFabulousNewsId(Long fabulousNewsId) {
+		this.fabulousNewsId = fabulousNewsId;
+	}
+
+	public Integer getFabulousSum() {
+		return fabulousSum;
+	}
+
+	public void setFabulousSum(Integer fabulousSum) {
+		this.fabulousSum = fabulousSum;
+	}
+
 	public Long getFollowId() {
 		return followId;
 	}

@@ -47,4 +47,17 @@
     <logger name="com.lotus.smallroutine.fabulous.mapper.FabulousMapper" level="DEBUG" />
     <logger name="com.lotus.backstage.integral.mapper.IntegralMapper" level="DEBUG" />
     <logger name="com.lotus.backstage.integral.mapper.IntegralTypeMapper" level="DEBUG" />
+    <logger name="com.lotus.smallroutine.follow.mapper.FollowMapper" level="DEBUG" />
+    
+    <logger name="com.lotus.backstage.logistics.mapper.LogisticsDeleteBackupMapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.logistics.mapper.LogisticsMapper" level="DEBUG" />
+    
+    <logger name="com.lotus.backstage.order.mapper.OrderDeleteBackupMapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.order.mapper.OrderMapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.order.mapper.OrderStatusDeleteBackupMapper" level="DEBUG" />
+    <logger name="com.lotus.backstage.order.mapper.OrderStatusMapper" level="DEBUG" />
+    
+    <logger name="com.lotus.backstage.product.mapper.ProductMapper" level="DEBUG" />
+    
+    <logger name="com.lotus.smallroutine.address.mapper.AddressMapper" level="DEBUG" />
 </configuration>

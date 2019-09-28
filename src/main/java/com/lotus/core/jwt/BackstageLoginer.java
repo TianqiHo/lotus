@@ -11,22 +11,23 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lotus.backstage.user.model.User;
-import com.lotus.core.base.baseexception.BaseException;
 import com.lotus.core.base.baselogger.AbstractLogger;
 import com.lotus.core.concurrent.CurrentBackstageUser;
+import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
 @WebFilter(urlPatterns = {
 		"/banner/*",
 		"/category/*",
 		"/comment/*",
 		"/integralType/*",
-		"/news/*"
+		"/news/*",
+		"/product/*"
 		},filterName = "backstageLoginer")
 public class BackstageLoginer extends AbstractLogger implements Filter,Loginer{
 
@@ -35,34 +36,39 @@ public class BackstageLoginer extends AbstractLogger implements Filter,Loginer{
 	
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	//@Autowired
+	private RequireLoginClassExcludeContext requireLoginClassExcludeContext;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-        String token = jwtUtil.obtainToken(request);
-        
-		if(null!=token) {
-			Claim data = null;
-	        try {
-	        	data = JWT.decode(token).getClaim("data");
-	        	 if (data != null) {
-	        		 User user = null;
-	        		 user = objectMapper.readValue(data.asString(),User.class);
-	        		 CurrentBackstageUser.setUser(user);
-	             }
-	        	
-	        } catch (JWTDecodeException e) {
-	            throw new RuntimeException(e);
-	        }
-		}else {
-			throw new RuntimeException("Landing timeout,Please login again");
-		}
-
+		 try {
+			 //if(!requireLoginClassExcludeContext.excludeMethods(request,ServerRequireLogin.class)) {
+				 String token = jwtUtil.obtainToken(request);
+				 if(!StringUtils.isEmpty(token)) {
+			        	
+			        	Claim data = null;
+			        	data = JWT.decode(token).getClaim("data");
+			        	 if (data != null) {
+			        		 User user = null;
+			        		 user = objectMapper.readValue(data.asString(),User.class);
+			        		 CurrentBackstageUser.setUser(user);
+			             }
+			        	
+			       
+				 }else {
+					throw new RuntimeException("Landing timeout,Please login again");
+				 }
+			// }
+		 } catch (Exception e) {
+	          throw new RuntimeException(e);
+	     }
 		chain.doFilter(request, response);
 		
-		
 	}
+	
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -72,6 +78,7 @@ public class BackstageLoginer extends AbstractLogger implements Filter,Loginer{
 	@Override
 	public void destroy() {
 		CurrentBackstageUser.clear();
+		//requireLoginClassExcludeContext.clear();
 		Filter.super.destroy();
 	}
 	
@@ -79,4 +86,6 @@ public class BackstageLoginer extends AbstractLogger implements Filter,Loginer{
 	protected Class<?> getClassForLogger() {
 		return BackstageLoginer.class;
 	}
+
+
 }

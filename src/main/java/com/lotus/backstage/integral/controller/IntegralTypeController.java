@@ -14,6 +14,7 @@ import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
 @RestController
 @RequestMapping("integralType")
+@ServerRequireLogin(excludeUriNames = {"selectIntegralTypes","deleteIntegralTypes","selectIntegralType"},require = false)
 public class IntegralTypeController extends BaseController<IntegralType> {
 
 	@Autowired

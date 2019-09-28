@@ -115,6 +115,7 @@
 		A.NEWS_AUTHOR AS newsAuthor,
 		A.NEWS_FROM AS newsFrom,
 		A.NEWS_TAG AS newsTag,
+		A.NEWS_CONTENT AS newsContent,
 		IF (ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AS createTime,
 		A.VALID AS valid,
 		A. STATUS AS STATUS,
@@ -122,10 +123,11 @@
 			C.CATEGORY_NAME SEPARATOR ','
 		) AS categoryNames,
 	    A.SEE_SUM AS seeSum,
+	    A.FABULOUS_SUM AS fabulousSum,
 	    COUNT(DISTINCT E.ID) AS commentCount
 	    <if test="categoryType == 'BBS_TYPE'">
-	    ,IF(ISNULL(D.ID),'官方发帖',D.NICK_NAME) AS createByName,
-        IF(ISNULL(D.HEAD_PORTRAIT),'/lotus/logo.png',D.HEAD_PORTRAIT) AS headPortrait
+	    ,IF(ISNULL(D.ID),'荷花官方',D.NICK_NAME) AS createByName,
+        IF(ISNULL(D.HEAD_PORTRAIT),'http://49.232.144.208/lotus/logo.png',D.HEAD_PORTRAIT) AS headPortrait
         </if>
 	FROM
 		NEWS A
@@ -243,8 +245,8 @@
 		 SUBSTR(B.NEWS_CONTENT, 1, 100) AS newsContent,
 		 COUNT(DISTINCT C.ID) AS commentCount
 		 <if test="followType==2">
-		  ,IF(ISNULL(D.ID),'官方发帖',D.NICK_NAME) AS createByName,
-          IF(ISNULL(D.HEAD_PORTRAIT),'/lotus/logo.png',D.HEAD_PORTRAIT) AS headPortrait
+		  ,IF(ISNULL(D.ID),'荷花官方',D.NICK_NAME) AS createByName,
+          IF(ISNULL(D.HEAD_PORTRAIT),'http://49.232.144.208/lotus/logo.png',D.HEAD_PORTRAIT) AS headPortrait
 		 </if> 
 		
 		FROM FOLLOW A 
@@ -273,15 +275,20 @@
      A.NEWS_TITLE AS newsTitle, 
      A.NEWS_IMAGE AS newsImage, 
      IF(ISNULL(A.NEWS_AUTHOR),C.NICK_NAME,A.NEWS_AUTHOR) AS newsAuthor, 
+     IF(ISNULL(C.HEAD_PORTRAIT),'http://49.232.144.208/lotus/logo.png',C.HEAD_PORTRAIT) AS headPortrait,
+     IF(ISNULL(C.ID),'荷花官方',C.NICK_NAME) AS createByName,
      A.NEWS_FROM AS newsFrom, 
      A.NEWS_TAG AS newsTag,
      A.CREATE_TIME AS createTime, 
      A.SEE_SUM AS seeSum,
      A.NEWS_CONTENT AS newsContent,
-     B.ID AS followId 
-    from news A
+     B.ID AS followId,
+     A.FABULOUS_SUM AS fabulousSum,
+     D.ID AS fabulousNewsId
+    FROM NEWS A
     LEFT JOIN FOLLOW B ON A.ID=B.SERCICE_ID AND B.CREATE_BY=#{createBy,jdbcType=BIGINT}
     LEFT JOIN CUSTOMER C ON A.CREATE_BY = C.ID AND C.ID = #{createBy,jdbcType=BIGINT}
+    LEFT JOIN INTEGRAL D ON D.SERVICE_ID = A.ID AND D.CREATE_BY = #{createBy,jdbcType=BIGINT}
     where A.ID = #{id,jdbcType=BIGINT}
   </select>
   
@@ -398,4 +405,7 @@
     </trim>
   </insert>
   
+  <update id="fabulousNews">
+     UPDATE NEWS SET FABULOUS_SUM = IF(ISNULL(FABULOUS_SUM),0,FABULOUS_SUM)+1 WHERE ID = #{id}
+  </update>
 </mapper>

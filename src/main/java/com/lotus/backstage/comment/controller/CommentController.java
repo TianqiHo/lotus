@@ -18,6 +18,7 @@ import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
 @RestController
 @RequestMapping("comment")
+@ServerRequireLogin(excludeUriNames = {"selectComments","deleteComments","selectComment"},require = false)
 public class CommentController extends BaseController<Comment> {
 
 	@Autowired

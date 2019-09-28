@@ -10,9 +10,11 @@ import com.lotus.backstage.banner.model.Banner;
 import com.lotus.backstage.banner.service.IBannerService;
 import com.lotus.core.base.basecontroller.BaseController;
 import com.lotus.core.base.returnmessage.Message;
+import com.lotus.core.jwt.annotation.ClientRequireLogin;
 
 @RestController
 @RequestMapping("clientBanner")
+@ClientRequireLogin(require = false,excludeMethodName = {"selectBanners"})
 public class ClientBannerController extends BaseController<Banner> {
 
 	@Autowired

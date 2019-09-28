@@ -14,6 +14,7 @@ import com.lotus.smallroutine.follow.service.IFollowService;
 
 @RestController
 @RequestMapping("clientFollow")
+@ClientRequireLogin(excludeMethodName = {"getClassForLogger"},require = false)
 public class ClientFollowController extends BaseController<Follow> {
 
 	@Autowired

@@ -266,7 +266,6 @@
 								type:'POST',
 								url:Config.requestContextPath+'/banner/saveOrUpdateBanner',
 								data:JSON.stringify(data),
-								timeout:2000,
 								dataType:'JSON',
 								contentType:'application/json',
 								success:function(result,status,xhr){
@@ -304,7 +303,6 @@
 						type:'POST',
 						url:Config.requestContextPath+'/banner/selectBanner',
 						data:JSON.stringify({id:rows[0].id}),
-						timeout:5000,
 						dataType:'JSON',
 						contentType:'application/json',
 						success:function(result,status,xhr){
@@ -368,7 +366,6 @@
 							type:'POST',
 							url:Config.requestContextPath+'/banner/deleteBanners',
 							data:JSON.stringify({ids:ids.join(',')}),
-							timeout:5000,
 							dataType:'JSON',
 							contentType:'application/json',
 							success:function(result,status,xhr){

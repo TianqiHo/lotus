@@ -3,7 +3,6 @@ package com.lotus.core.base.basetest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lotus.core.base.basejson.BaseJson;
 
 public abstract class BaseTest<T> {
 	

@@ -17,7 +17,8 @@
     ID, INTEGRAL, INTEGRAL_TYPE_ID, CREATE_BY, CREATE_TIME, VALID, LOG, VERSION,SERVICE_ID
   </sql>
   
-  <select id="selectIntegral" parameterType="com.lotus.backstage.integral.model.Integral" resultMap="BaseResultMap">
+  <select id="selectIntegral" parameterType="com.lotus.backstage.integral.model.Integral"
+            resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from integral

@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ClientRequireLogin {
-
+	 
 	 boolean require() default true;
+	 
+	 String[] excludeMethodName() default {};
 }

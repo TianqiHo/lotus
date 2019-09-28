@@ -13,8 +13,29 @@ public class Banner extends BaseModel{
     private Integer bannerOrder;
 
     private String targetUrl;
+    
+    private Long bannerTypeId;
+    
+    private String categoryType;
+    
+    
+    public String getCategoryType() {
+		return categoryType;
+	}
 
-    public String getBannerName() {
+	public void setCategoryType(String categoryType) {
+		this.categoryType = categoryType;
+	}
+
+	public Long getBannerTypeId() {
+		return bannerTypeId;
+	}
+
+	public void setBannerTypeId(Long bannerTypeId) {
+		this.bannerTypeId = bannerTypeId;
+	}
+
+	public String getBannerName() {
         return bannerName;
     }
 

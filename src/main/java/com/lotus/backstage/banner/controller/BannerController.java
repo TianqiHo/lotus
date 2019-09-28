@@ -14,6 +14,7 @@ import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
 @RestController
 @RequestMapping("banner")
+@ServerRequireLogin(excludeUriNames = {"selectBanners","selectBanner","deleteBanners"},require = false)
 public class BannerController extends BaseController<Banner> {
 
 	@Autowired

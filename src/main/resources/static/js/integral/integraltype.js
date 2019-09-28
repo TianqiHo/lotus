@@ -137,7 +137,6 @@
 							type:'POST',
 							url:Config.requestContextPath+'/category/selectCategorys',
 							data:JSON.stringify({categoryType:IntegralType.Attr.categoryType,usePagenation:false}),
-							timeout:2000,
 							dataType:'JSON',
 							contentType:'application/json',
 							success:function(result,status,xhr){
@@ -288,7 +287,6 @@
 								type:'POST',
 								url:Config.requestContextPath+'/integralType/saveOrUpdateIntegralType',
 								data:JSON.stringify(data),
-								timeout:2000,
 								dataType:'JSON',
 								contentType:'application/json',
 								success:function(result,status,xhr){
@@ -326,7 +324,6 @@
 						type:'POST',
 						url:Config.requestContextPath+'/integralType/selectIntegralType',
 						data:JSON.stringify({id:rows[0].id}),
-						timeout:5000,
 						dataType:'JSON',
 						contentType:'application/json',
 						success:function(result,status,xhr){
@@ -371,7 +368,6 @@
 							type:'POST',
 							url:Config.requestContextPath+'/integralType/deleteIntegralTypes',
 							data:JSON.stringify({ids:ids.join(',')}),
-							timeout:5000,
 							dataType:'JSON',
 							contentType:'application/json',
 							success:function(result,status,xhr){

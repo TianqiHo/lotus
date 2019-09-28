@@ -4,6 +4,7 @@
 
   <resultMap id="BaseResultMap" type="com.lotus.backstage.banner.model.Banner">
     <id column="ID" jdbcType="BIGINT" property="id" />
+    <id column="BANNER_TYPE_ID" jdbcType="BIGINT" property="bannerTypeId" />
     <result column="BANNER_NAME" jdbcType="VARCHAR" property="bannerName" />
     <result column="BANNER_IMG" jdbcType="VARCHAR" property="bannerImg" />
     <result column="BANNER_ORDER" jdbcType="INTEGER" property="bannerOrder" />
@@ -19,7 +20,7 @@
   
   <sql id="Base_Column_List">
     ID, BANNER_NAME, BANNER_IMG, BANNER_ORDER, TARGET_URL, VALID, CREATE_TIME, CREATE_BY, 
-    UPDATE_BY, UPDATE_TIME, VERSION, LOG
+    UPDATE_BY, UPDATE_TIME, VERSION, LOG,BANNER_TYPE_ID
   </sql>
   
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -29,44 +30,58 @@
     where ID = #{id,jdbcType=BIGINT}
   </select>
   
-  <select id = "selectBanners" resultMap="BaseResultMap" parameterType="com.lotus.backstage.banner.model.Banner">
-    select 
-    <include refid="Base_Column_List" />
-    from banner
+  <select id = "selectBanners" resultType="com.lotus.backstage.banner.model.Banner" parameterType="com.lotus.backstage.banner.model.Banner">
+    SELECT 
+    A.ID AS id, 
+    A.BANNER_NAME AS bannerName, 
+    A.BANNER_IMG AS bannerImg, 
+    A.BANNER_ORDER AS bannerOrder, 
+    A.TARGET_URL AS targetUrl, 
+    A.VALID AS valid, 
+    A.CREATE_TIME AS createTime, 
+    A.UPDATE_TIME AS updateTime
+    FROM BANNER A
+    LEFT JOIN CATEGORY B ON A.BANNER_TYPE_ID = B.ID
     <trim prefix="WHERE " suffixOverrides="AND">
        <if test="id != null">
-        ID = #{id,jdbcType=BIGINT} AND
+        A.ID = #{id,jdbcType=BIGINT} AND
       </if>
       <if test="bannerName != null and bannerName !=''">
-        BANNER_NAME Like CONCAT('%',#{bannerName,jdbcType=VARCHAR},'%') AND
+        A.BANNER_NAME Like CONCAT('%',#{bannerName,jdbcType=VARCHAR},'%') AND
       </if>
       <if test="bannerImg != null">
-        BANNER_IMG = #{bannerImg,jdbcType=VARCHAR} AND
+        A.BANNER_IMG = #{bannerImg,jdbcType=VARCHAR} AND
       </if>
       <if test="bannerOrder != null">
-        BANNER_ORDER = #{bannerOrder,jdbcType=INTEGER} AND
+        A.BANNER_ORDER = #{bannerOrder,jdbcType=INTEGER} AND
+      </if>
+      
+       <if test="bannerTypeId != null">
+        A.BANNER_TYPE_ID = #{bannerTypeId,jdbcType=INTEGER} AND
+      </if>
+      
+        <if test="categoryType != null">
+        B.CATEGORY_TYPE = #{categoryType,jdbcType=INTEGER} AND
       </if>
      
       <if test="valid != null">
-        VALID = #{valid,jdbcType=INTEGER} AND
+        A.VALID = #{valid,jdbcType=INTEGER} AND
       </if>
       <if test="beginTime != null">
-        DATE_FORMAT(#{beginTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(UPDATE_TIME),CREATE_TIME,UPDATE_TIME) AND 
+        DATE_FORMAT(#{beginTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') &lt;= IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) AND 
       </if>
       <if test="createBy != null">
-       CREATE_BY = #{createBy,jdbcType=BIGINT} AND
+       A.CREATE_BY = #{createBy,jdbcType=BIGINT} AND
       </if>
       <if test="updateBy != null">
-        UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND
+        A.UPDATE_BY = #{updateBy,jdbcType=BIGINT} AND
       </if>
       <if test="endTime != null">
-        IF(ISNULL(UPDATE_TIME),CREATE_TIME,UPDATE_TIME) &lt;= DATE_FORMAT(#{endTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') AND
+        IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) &lt;= DATE_FORMAT(#{endTime,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s') AND
       </if>
-      <if test="version != null">
-        VERSION = #{version,jdbcType=INTEGER} AND
-      </if>
+      
     </trim>
-     ORDER BY IF(ISNULL(UPDATE_TIME),CREATE_TIME,UPDATE_TIME) DESC
+     ORDER BY IF(ISNULL(A.UPDATE_TIME),A.CREATE_TIME,A.UPDATE_TIME) DESC
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -82,6 +97,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         ID,
+      </if>
+      <if test="bannerTypeId != null">
+        BANNER_TYPE_ID,
       </if>
       <if test="bannerName != null">
         BANNER_NAME,
@@ -121,6 +139,10 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
+      <if test="bannerTypeId != null">
+        #{bannerTypeId,jdbcType=INTEGER},
+      </if>
+     
       <if test="bannerName != null">
         #{bannerName,jdbcType=VARCHAR},
       </if>
@@ -163,6 +185,10 @@
       <if test="bannerName != null">
         BANNER_NAME = #{bannerName,jdbcType=VARCHAR},
       </if>
+        <if test="bannerTypeId != null">
+        BANNER_TYPE_ID = #{bannerTypeId,jdbcType=INTEGER},
+       </if>
+     
       <if test="bannerImg != null">
         BANNER_IMG = #{bannerImg,jdbcType=VARCHAR},
       </if>

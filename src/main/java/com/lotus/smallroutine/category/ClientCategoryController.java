@@ -16,6 +16,7 @@ import com.lotus.core.jwt.annotation.ClientRequireLogin;
 
 @RestController
 @RequestMapping("clientCategory")
+@ClientRequireLogin(require = false,excludeMethodName = {"selectCategorys"})
 public class ClientCategoryController extends BaseController<Category> {
 
 	@Autowired

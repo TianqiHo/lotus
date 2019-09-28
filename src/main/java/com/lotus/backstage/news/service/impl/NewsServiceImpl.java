@@ -1,7 +1,10 @@
 package com.lotus.backstage.news.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -256,4 +259,108 @@ public class NewsServiceImpl extends AbstractService implements INewsService {
 		return message;
 	}
 
+	
+	/**
+	 * 点赞文章
+	 */
+	@Override
+	public Message fabulousNews(News news) throws Exception {
+	    Message	message = this.iMessage.buildDefaultMessage();
+		
+	    if(!StringUtils.isEmpty(news.getIntegralTypeId())) {
+	    	Long customerId = CurrentWxMiniCustomer.obtainCustomerID();
+		    //对应的积分规则
+		    IntegralType integralType = integralTypeMapper.selectByPrimaryKey(news.getIntegralTypeId());
+			
+		    if(null != integralType){
+		    	Integral integralQuery = new Integral();
+		    	integralQuery.setCreateBy(customerId);
+		    	integralQuery.setIntegralTypeId(news.getIntegralTypeId());
+		    	List<Integral> integrals = integralMapper.selectIntegral(integralQuery);
+		    	if(null!=integrals) {
+		    		ConsumerObtain consumerObtain = new ConsumerObtain(news, false, integralType, integrals.size());
+		    		integrals.forEach(consumerObtain);
+		    		consumerObtain.andThen(consumerObtain);
+		    		
+		    	}
+		    	
+		    }
+	    }
+		
+	    if(!StringUtils.isEmpty(news.getId()) && 0!=news.getId()) {
+			int oprate =  newsMapper.fabulousNews(news.getId());
+			message = this.iMessage.buildSuccessMessage();
+			message.setData(oprate);
+		}else {
+			throw new BaseException("参数ID为空");
+		}
+		
+		return message;
+	}
+	
+	class ConsumerObtain implements Consumer<Integral>{
+
+		private IntegralType integralType;
+		private News news;
+		private int fabulousNewsCount;
+		private boolean isFabulousNews;
+		
+		public ConsumerObtain(News news,boolean isFabulousNews,IntegralType integralType,int fabulousNewsCount) {
+			super();
+			this.news = news;
+			this.isFabulousNews = isFabulousNews;
+			this.integralType = integralType;
+			this.fabulousNewsCount = fabulousNewsCount;
+		}
+
+		
+		public boolean isFabulousNews() {
+			return isFabulousNews;
+		}
+
+
+		public void setFabulousNews(boolean isFabulousNews) {
+			this.isFabulousNews = isFabulousNews;
+		}
+
+
+		public News getNews() {
+			return news;
+		}
+
+		public void setNews(News news) {
+			this.news = news;
+		}
+
+		@Override
+		public void accept(Integral t) {
+
+			if(t.getServiceId().equals(news.getId())) {
+				 isFabulousNews = true;
+				 return;
+			}
+		}
+		
+		@Override
+		public Consumer<Integral> andThen(Consumer<? super Integral> after) {
+			if(!isFabulousNews) {
+				int integralSum = fabulousNewsCount * integralType.getIntegralNum();
+	    		
+	    		if(integralSum<integralType.getIntegralDailyCeilingNum()) {
+	    			Integral integral = new Integral();
+	    			integral.buildCreateDefaultValue();
+	    			integral.setCreateBy(CurrentWxMiniCustomer.obtainCustomerID());
+	    			integral.setIntegral(integralType.getIntegralNum());
+	    			integral.setServiceId(news.getId());
+	    			integral.setIntegralTypeId(news.getIntegralTypeId());
+	    			
+	    			integralMapper.insertSelective(integral);
+	    			
+	    		}
+			}
+			return Consumer.super.andThen(after);
+		}
+		 
+		
+	}
 }

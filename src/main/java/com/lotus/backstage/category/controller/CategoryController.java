@@ -16,6 +16,7 @@ import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
 @RestController
 @RequestMapping("category")
+@ServerRequireLogin(excludeUriNames = {"selectCategorys","deleteCategorys","selectCategory"},require = false)
 public class CategoryController extends BaseController<Category> {
 
 	@Autowired

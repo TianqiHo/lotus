@@ -3,11 +3,11 @@
 #dynamicDatasource
 spring:
  profiles:
-  active :   dynamicDatasourceproduct,springConfigproduct,server,loggerproduct,uploadfile,lotusappproduct  #dynamicDatasource,springConfig,server,logger,devtoolsConfig,uploadfile,lotusapp,spsecurity
+  active :   dynamicDatasourceproduct,springConfigproduct,server,loggerproduct,uploadfile,lotusappproduct #dynamicDatasource,springConfig,server,logger,devtoolsConfig,uploadfile,lotusapp,spsecurit
   
  
-#指定tomcat部署后的项目访问路径
-#server.servlet.context-path = /micro-service
+#指定tomcat部署后的项目访问路径   
+#server.servlet.context-path = /micro-service  
 #server.servlet.application-display-name = micro-service
 
 #server.port = 9090

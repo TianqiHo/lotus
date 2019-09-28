@@ -141,7 +141,7 @@
 					        // striped: true,                      //是否显示行间隔色
 					         pagination: true,                   //是否显示分页（*）
 					         pageNumber: 1,                       //初始化加载第一页，默认第一页
-					         pageSize: 15,                       //每页的记录行数（*）
+					         pageSize: 2,                       //每页的记录行数（*）
 					         pageList: '[2,5,15,20]',        //可供选择的每页的行数
 					         sidePagination: 'server',           //分页方式：client客户端分页，server服务端分页（*
 					         showPaginationSwitch:true,
@@ -162,10 +162,13 @@
 					         },
 					        
 					         queryParams:function(params) {
+					        	 console.info(params);
+					        	 console.info('---------------------------------------------');
 					             params.pageNumber = params.offset+1;
 					             params.pageSize = params.limit;
 					             params.categoryType = News.Attr.categoryType
 					             params.platForm = 1;
+					             console.info(params);
 					            return params;
 					         },
 					         onLoadError: function (status, jqXHR) {
@@ -185,7 +188,6 @@
 							type:'POST',
 							url:Config.requestContextPath+'/category/selectCategorys',
 							data:JSON.stringify({categoryType:News.Attr.categoryType,usePagenation:false}),
-							timeout:2000,
 							dataType:'JSON',
 							contentType:'application/json',
 							success:function(result,status,xhr){
@@ -223,7 +225,6 @@
 								type:'POST',
 								url:Config.requestContextPath+'/news/selectNewss',
 								data:JSON.stringify(data),
-								timeout:2000,
 								dataType:'JSON',
 								contentType:'application/json',
 								success:function(result,status,xhr){
@@ -438,7 +439,6 @@
 						type:'POST',
 						url:Config.requestContextPath+'/news/selectNews',
 						data:JSON.stringify({id:rows[0].id}),
-						timeout:5000,
 						dataType:'JSON',
 						contentType:'application/json',
 						success:function(result,status,xhr){
@@ -512,7 +512,6 @@
 							type:'POST',
 							url:Config.requestContextPath+'/news/deleteNewss',
 							data:JSON.stringify({ids:ids.join(',')}),
-							timeout:5000,
 							dataType:'JSON',
 							contentType:'application/json',
 							success:function(result,status,xhr){
@@ -548,7 +547,7 @@
 						$(News.Attr.formID).data('bootstrapValidator').destroy();
 						$("#uploadNewsImg").fileinput('destroy');
 						$('#id').val('');
-						$('#bannerImg').val('');
+						$('#newsImage').val('');
 						News.Fn.FormClass.Fn.init();
 						News.Attr.editType = oprateType;
 						switch (oprateType) {

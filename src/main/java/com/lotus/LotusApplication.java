@@ -11,7 +11,7 @@ import com.lotus.core.dynamicDataSource.DynamicDataSourceRegister;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @Import(DynamicDataSourceRegister.class)//动态数据源
-@MapperScan(basePackages = {"com.lotus.*.*.mapper"})
+@MapperScan(basePackages = {"com.lotus.**.mapper"})
 @ServletComponentScan
 public class LotusApplication{
 

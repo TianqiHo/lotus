@@ -16,4 +16,5 @@ import java.lang.annotation.Target;
 public @interface ServerRequireLogin {
 
 	 boolean require() default true;
+	 String[] excludeUriNames() default {};
 }

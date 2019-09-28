@@ -1,26 +1,22 @@
 package com.lotus.core.jwt;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
-
-
-import com.lotus.core.base.baseexception.BaseException;
 import com.lotus.core.base.baselogger.AbstractLogger;
 import com.lotus.core.concurrent.CurrentBackstageUser;
 import com.lotus.core.concurrent.CurrentWxMiniCustomer;
-import com.lotus.core.jwt.JwtUtil;
 import com.lotus.core.jwt.annotation.ClientRequireLogin;
 import com.lotus.core.jwt.annotation.ServerRequireLogin;
 
@@ -32,10 +28,10 @@ import com.lotus.core.jwt.annotation.ServerRequireLogin;
 @SpringBootConfiguration
 public class JwtTokenHandlerIntercepter extends AbstractLogger implements HandlerInterceptor{
 	
-	@Autowired
-	private JwtUtil jwtUtil;
-
+	//@Autowired
+	//private ConfigurableApplicationContext context;
 	
+	//private RequireLoginClassExcludeContext requireLoginClassExcludeContext =null;
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -55,12 +51,13 @@ public class JwtTokenHandlerIntercepter extends AbstractLogger implements Handle
         	//验证后台是否需要登陆
         	ServerRequireLogin serverRequireLogin = method.getAnnotation(ServerRequireLogin.class);
         	 if (serverRequireLogin.require()) {
+        		// return verifyMethod(handlerMethod);
+        		 
         		 if(null==CurrentBackstageUser.obtainUser()) {
-        			 return false;
-        		 }else {
-        			 return true;
-        		 }
-        		// return annotation(request);
+	        		 return false;
+	        	 }else {
+	        		 return true;
+	        	 }
         	 }else {
         		 return true;
         	 }
@@ -74,6 +71,7 @@ public class JwtTokenHandlerIntercepter extends AbstractLogger implements Handle
 	        	 }else {
 	        		 return true;
 	        	 }
+	        	//return verifyMethod(handlerMethod);
 	       	 }else {
 	       		 return true;
 	       	 }
@@ -82,8 +80,53 @@ public class JwtTokenHandlerIntercepter extends AbstractLogger implements Handle
         	//不加注解的method走这里
         	return true;
         }
-
 	}	
+	
+	/**
+	private boolean verifyMethod(HandlerMethod handlerMethod) {
+
+		 Class<?> customerClass = handlerMethod.getBeanType();
+		 String methodName = handlerMethod.getMethod().getName();
+		 if(null==requireLoginClassExcludeContext) {
+			 requireLoginClassExcludeContext = context.getBean(RequireLoginClassExcludeContext.class);
+		 }
+		 
+		 if(requireLoginClassExcludeContext.containExcludeUrisKey(customerClass)
+				 && requireLoginClassExcludeContext.valueExcludeUris(customerClass).contains(methodName)){
+			 return true;
+		 }
+		 
+		 if(requireLoginClassExcludeContext.containExcludeUrisKey(customerClass)
+				 && !requireLoginClassExcludeContext.valueExcludeUris(customerClass).contains(methodName)){
+			 if(null!=CurrentBackstageUser.obtainUser()) {
+				return true; 
+			 }else {
+				 return false;
+			 }
+		 }
+		 
+		 if(!requireLoginClassExcludeContext.containExcludeUrisKey(customerClass)
+				 && requireLoginClassExcludeContext.containNoExcludeUris(customerClass)){
+			 if(null!=CurrentBackstageUser.obtainUser()) {
+				return true; 
+			 }else {
+				 return false;
+			 }
+		 }
+		 
+		 if(!requireLoginClassExcludeContext.containExcludeUrisKey(customerClass)
+				 && !requireLoginClassExcludeContext.containNoExcludeUris(customerClass)){
+			 
+			 if(null!=CurrentBackstageUser.obtainUser()) {
+				return true; 
+			 }else {
+				 return false;
+			 }
+		 }
+		 
+		 return false;
+	}
+	*/
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {

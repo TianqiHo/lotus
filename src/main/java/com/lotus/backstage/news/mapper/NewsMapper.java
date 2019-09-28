@@ -26,4 +26,6 @@ public interface NewsMapper {
 	List<News> selectMyFollows(Follow follow);
 	
 	News selectNewsAndIsFollow(@Param("createBy") Long createBy,@Param("id") Long id);
+
+	int fabulousNews(@Param("id") Long id);
 }

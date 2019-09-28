@@ -43,12 +43,12 @@ public class CommentServiceImpl extends AbstractService implements ICommentServi
 	@Override
 	public Message saveOrUpdateComment(Comment comment) throws Exception {
 		Message	message = this.iMessage.buildDefaultMessage();
+		
 			int oprate;
 			StringBuffer alertMessage = new StringBuffer("请求成功");
 			if(StringUtils.isEmpty(comment.getId())) {
 				comment.buildCreateDefaultValue();
 				comment.setStatus(1);
-				
 				oprate = commentMapper.insertSelective(comment);
 				
 				

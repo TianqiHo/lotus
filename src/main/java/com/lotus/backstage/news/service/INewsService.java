@@ -22,4 +22,6 @@ public interface INewsService {
 	Message selectClientNewss(News news)throws Exception;
 
 	Message selectNewsAndIsFollow(News news) throws Exception;
+
+	Message fabulousNews(News news)throws Exception;
 }

@@ -28,7 +28,10 @@ public class JwtUtil {
 	 * @param data
 	 * @return
 	 */
-	public String generateToken(Long id,String data) {
+	public String generateToken(Long id,String data)throws Exception{
+		if(null==id) {
+			throw new BaseException("请重新登陆");
+		}
 		Date date = new Date();
 		Long currentMi = System.currentTimeMillis();
         return JWT
