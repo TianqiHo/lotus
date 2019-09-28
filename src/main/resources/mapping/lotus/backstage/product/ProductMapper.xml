@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.backstage.product.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.lotus.backstage.product.model.Product">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="PRODUCT_NAME" jdbcType="VARCHAR" property="productName" />
+    <result column="PRODUCT_CATEGORY_ID" jdbcType="BIGINT" property="productCategoryId" />
+    <result column="PRODUCT_IMG" jdbcType="VARCHAR" property="productImg" />
+    <result column="PRODUCT_INTEGRAL_PRICE" jdbcType="INTEGER" property="productIntegralPrice" />
+    <result column="PRODUCT_INTRODUCTION" jdbcType="VARCHAR" property="productIntroduction" />
+    <result column="DESCRIBE_IMG" jdbcType="VARCHAR" property="describeImg" />
+    <result column="PRODUCT_REPERTORY_NUM" jdbcType="INTEGER" property="productRepertoryNum" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="BIGINT" property="updateBy" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, PRODUCT_NAME, PRODUCT_CATEGORY_ID, PRODUCT_IMG, PRODUCT_INTEGRAL_PRICE, PRODUCT_INTRODUCTION, 
+    DESCRIBE_IMG, PRODUCT_REPERTORY_NUM, CREATE_TIME, CREATE_BY, UPDATE_TIME, UPDATE_BY, 
+    VALID, VERSION, LOG
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.lotus.backstage.product.model.Product">
+   <selectKey order="BEFORE" keyProperty="id" resultType="Long">
+      SELECT FUN_GET_ID()
+    </selectKey>
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="productName != null">
+        PRODUCT_NAME,
+      </if>
+      <if test="productCategoryId != null">
+        PRODUCT_CATEGORY_ID,
+      </if>
+      <if test="productImg != null">
+        PRODUCT_IMG,
+      </if>
+      <if test="productIntegralPrice != null">
+        PRODUCT_INTEGRAL_PRICE,
+      </if>
+      <if test="productIntroduction != null">
+        PRODUCT_INTRODUCTION,
+      </if>
+      <if test="describeImg != null">
+        DESCRIBE_IMG,
+      </if>
+      <if test="productRepertoryNum != null">
+        PRODUCT_REPERTORY_NUM,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryId != null">
+        #{productCategoryId,jdbcType=BIGINT},
+      </if>
+      <if test="productImg != null">
+        #{productImg,jdbcType=VARCHAR},
+      </if>
+      <if test="productIntegralPrice != null">
+        #{productIntegralPrice,jdbcType=INTEGER},
+      </if>
+      <if test="productIntroduction != null">
+        #{productIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="describeImg != null">
+        #{describeImg,jdbcType=VARCHAR},
+      </if>
+      <if test="productRepertoryNum != null">
+        #{productRepertoryNum,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.backstage.product.model.Product">
+    update product
+    <set>
+      <if test="productName != null">
+        PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryId != null">
+        PRODUCT_CATEGORY_ID = #{productCategoryId,jdbcType=BIGINT},
+      </if>
+      <if test="productImg != null">
+        PRODUCT_IMG = #{productImg,jdbcType=VARCHAR},
+      </if>
+      <if test="productIntegralPrice != null">
+        PRODUCT_INTEGRAL_PRICE = #{productIntegralPrice,jdbcType=INTEGER},
+      </if>
+      <if test="productIntroduction != null">
+        PRODUCT_INTRODUCTION = #{productIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="describeImg != null">
+        DESCRIBE_IMG = #{describeImg,jdbcType=VARCHAR},
+      </if>
+      <if test="productRepertoryNum != null">
+        PRODUCT_REPERTORY_NUM = #{productRepertoryNum,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+ 
+ 
+ <select id="selectClientProducts" parameterType="com.lotus.backstage.product.model.Product" 
+                    resultType="com.lotus.backstage.product.model.Product">
+	  SELECT 
+		A.ID AS id,
+		A.PRODUCT_IMG AS productImg,
+		A.PRODUCT_INTEGRAL_PRICE AS productIntegralPrice,
+		A.PRODUCT_NAME AS productName,
+		B.CATEGORY_NAME AS categoryName,
+		A.PRODUCT_CATEGORY_ID AS productCategoryId,
+		A.PRODUCT_REPERTORY_NUM AS productRepertoryNum
+		FROM PRODUCT A
+		INNER JOIN CATEGORY B ON A.PRODUCT_CATEGORY_ID = B.ID
+		WHERE B.CATEGORY_TYPE = 'PRODUCT_TYPE' AND A.VALID =1
+		ORDER BY A.PRODUCT_CATEGORY_ID DESC
+ </select>
+ 
+ <update id="downProductRepertoryNum">
+  UPDATE PRODUCT SET PRODUCT_REPERTORY_NUM = PRODUCT_REPERTORY_NUM-1 WHERE ID = #{id}
+ </update>
+</mapper>

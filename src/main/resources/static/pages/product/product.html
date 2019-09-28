@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>商品列表页</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+ 
+<link href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" rel="stylesheet" />
+ 
+<link rel="stylesheet" href="/lotus/control/bootstrap/3/bootstrap/dist/css/bootstrap.min.css">
+
+<link href="/lotus/control/bootstrap/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
+
+<link rel="stylesheet" href="/lotus/control/bootstrap/bootstrap-table/dist/bootstrap-table.min.css">
+
+<link rel="stylesheet" href="/lotus/control/jquery/jquery-confirm/jquery-confirm.min.css">
+
+<link rel="stylesheet" href="/lotus/control/bootstrap/bootstrap-validator/dist/css/bootstrapValidator.min.css">
+
+<link rel="stylesheet" href="/lotus/control/bootstrap/bootstrap-select/dist/css/bootstrap-select.min.css">
+
+<style type="text/css">
+.table .thead-blue th {
+	color: #fff;
+	background-color: #3195f1;
+	border-color: #0d7adf;
+}
+
+.fixed-table-header {
+	border-right: solid 1px #ddd;
+	border-top: solid 1px #ddd;
+}
+
+.fixed-table-header table {
+	border-top: solid 0px #ddd !important;
+	margin-top: -1px;
+}
+</style>
+</head>
+<body> 
+          
+   <div class="container-fluid">
+       <div class="row" style="margin-top: 5px">
+        <div class="col-lg-12">
+          <div class="panel panel-default">
+             <div class="panel-heading">
+              <span class="glyphicon glyphicon-search" style="width: 30%"></span>
+              <span class="glyphicon glyphicon-picture" style="width: 30%;text-align: center;"></span>
+              <span class=" pull-right text-primary" style="width: 30%;text-align:right;" id="title"></span></div>
+             <div class="panel-body">
+             
+               <form class="form-inline" id="searchForm">
+                  <input type="hidden" id="pageNumber" name="pageNumber" value="1"/>
+                  <input type="hidden" id="pageSize" name="pageSize" value="15"/>
+				  <div class="form-group">
+				    <label for="newsTitle2">商品名称</label>
+				    <input type="text" class="form-control" id="productName2" name="productName">
+				  </div>
+				   <div class="form-group">
+				    <label for="newsAuthor2">单价积分额</label>
+				    <input type="text" class="form-control" id="productIntegralPrice2" name="productIntegralPrice">
+				  </div>
+				  <div class="form-group">
+				    <label for="beginTime">开始时间</label>
+				    <input type="date" class="form-control" id="beginTime" name="beginTime">
+				  </div>-
+				   <div class="form-group">
+				    <label for="endTime">结束时间</label>
+				    <input type="date" class="form-control" id="endTime" name="endTime">
+				  </div>
+				  <button type="button" id="search" class="btn btn-warning pull-right btn-md">查询</button>
+				</form>	     
+        </div>
+      </div>
+      </div>
+      </div>
+      
+      
+      <div class="row">
+         <div class="col-lg-12">
+			  <div id="toolbar" class="toolbar">
+			    <button type="button" class="btn btn-default btn-primary" onclick="Product.Fn.ModalClass.Fn.openModal(1)">新增
+			     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			    </button>
+			    <button type="button" class="btn btn-default btn-success" onclick="Product.Fn.ModalClass.Fn.openModal(2)">修改
+			    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+			    </button>
+			    <button type="button" class="btn btn-default btn-danger" onclick="Product.Fn.deleteProduct()">删除
+			         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+			    </button>
+			     <button type="button" class="btn btn-default btn-info" onclick="Product.Fn.detail()">查看内容
+			         <span class="glyphicon glyphicon-tag " aria-hidden="true"></span>
+			    </button>
+			 </div>
+		
+		    <!-- Table -->
+			<table id="productTable"></table>
+	    </div>
+      </div>
+   
+   </div>
+
+
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="productModal">
+   <!-- modal -->
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">编辑</h4>
+      </div>
+      
+      <div class="modal-body">
+	         <div class="container-fluid">
+		        <div class="row">
+		            <!-- form: -->
+		            <section>
+		                <div class="col-lg-12">
+		                    <form class="form-horizontal" id="productForm" name="productForm">
+		                        <input type="hidden" id="id" name="id">
+		                        <fieldset>
+		                            <div class="form-group">
+		                            
+		                                <label class="col-lg-2 control-label" for="productCategoryId">类型</label>
+		                                <div class="col-lg-4">
+		                                    <select class="selectpicker form-control" data-live-search="true" name="productCategoryId" id="productCategoryId">
+		                                       
+		                                    </select>
+		                                </div>
+		                                
+		                                <label class="col-lg-2 control-label" for="productName">商品名称</label>
+		                                <div class="col-lg-4">
+		                                    <input type="text" class="form-control" name="productName" id="productName" />
+		                                </div>
+		                               
+		                            </div>
+		                        </fieldset>
+		                        
+		                         <fieldset>
+		                            <div class="form-group">
+		                                <label class="col-lg-2 control-label" for="productIntegralPrice">积分额</label>
+		                                <div class="col-lg-4">
+		                                    <input type="text" class="form-control" name="productIntegralPrice" id="productIntegralPrice" />
+		                                </div>
+		                                
+		                                <label class="col-lg-2 control-label" for="productRepertoryNum">库存</label>
+		                                <div class="col-lg-4">
+		                                    <input type="text" class="form-control" id="productRepertoryNum" name="productRepertoryNum"/>
+		                                </div>
+		                            </div>
+		                        </fieldset>
+		                        
+		                         <fieldset>
+		                            <div class="form-group">
+		                                <label class="col-lg-2 control-label" for="productIntroduction">商品简介</label>
+		                                <div class="col-lg-10">
+		                                    <textarea class="form-control" rows="8" id="productIntroduction" name="productIntroduction"></textarea>
+		                                </div>
+		                            </div>
+		                        </fieldset>
+		                        
+		                        <fieldset>
+		                             <div class="form-group">
+		                                <label class="col-lg-2 control-label" for="productImg">商品图片</label>
+		                                <div class="col-lg-10">
+		                                    <input type="file" id="uploadProductImg" name="uploadProductImg" multiple>
+				                            <input type="hidden" id="productImg" name="productImg">
+		                                </div>
+		                            </div>
+		                        </fieldset>
+		                        
+		                        <fieldset>
+		                            <div class="form-group">
+		                                <label class="col-lg-2 control-label" for="describeImg">描述图片</label>
+		                                <div class="col-lg-10">
+		                                    <input type="file" id="uploadProductDescribeImg" name="uploadProductDescribeImg" multiple>
+				                            <input type="hidden" id="describeImg" name="describeImg">
+		                                </div>
+		                            </div>
+		                        </fieldset>
+		
+		                    </form>
+		                </div>
+		            </section>
+		            <!-- :form -->
+		        </div>
+	    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="Product.Fn.FormClass.Fn.saveOrUpdateProduct()">保存</button>
+      </div>
+      
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+  <!-- /.modal -->
+</div>
+
+
+</body>
+ 
+ <script type="text/javascript" src="/lotus/control/jquery/jquery.min.js"></script>
+ 
+ <script type="text/javascript" src="/lotus/control/jquery/jquery-confirm/jquery-confirm.min.js"></script>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+ 
+ <script type="text/javascript" src="/lotus/control/bootstrap/3/bootstrap/dist/js/bootstrap.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-table/dist/bootstrap-table.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-validator/dist/js/bootstrapValidator.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-validator/dist/js/language/zh_CN.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-select/dist/js/i18n/defaults-zh_CN.min.js"></script>
+ 
+ <script src="/lotus/control/bootstrap/bootstrap-fileinput/js/fileinput.min.js" type="text/javascript"></script>
+ <script src="/lotus/control/bootstrap/bootstrap-fileinput/js/locales/zh.js" type="text/javascript"></script>
+ 
+ <script type="text/javascript" src="/lotus/js/common/config.js"></script>
+ <script type="text/javascript" src="/lotus/js/common/common.js"></script>
+ <script type="text/javascript" src="/lotus/js/product/product.js"></script>
+</html>

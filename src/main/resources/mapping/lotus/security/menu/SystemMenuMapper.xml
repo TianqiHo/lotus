@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.core.security.systemmenu.mapper.SystemMenuMapper">
+
+  <resultMap id="BaseResultMap" type="com.lotus.core.security.systemmenu.model.SystemMenu">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="P_ID" jdbcType="BIGINT" property="pId" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="ACTION_URL" jdbcType="VARCHAR" property="actionUrl" />
+    <result column="RESOURCE_URL" jdbcType="VARCHAR" property="resourceUrl" />
+    <result column="VALID" jdbcType="INTEGER" property="valid" />
+    <result column="VERSION" jdbcType="INTEGER" property="version" />
+    <result column="LOG" jdbcType="VARCHAR" property="log" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_BY" jdbcType="BIGINT" property="createBy" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="UPDATE_BY" jdbcType="BIGINT" property="updateBy" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, P_ID, NAME, ACTION_URL, RESOURCE_URL, VALID, VERSION, LOG, CREATE_TIME, CREATE_BY, 
+    UPDATE_TIME, UPDATE_BY
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from system_menu
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from system_menu
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.lotus.core.security.systemmenu.model.SystemMenu">
+    insert into system_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="pId != null">
+        P_ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="actionUrl != null">
+        ACTION_URL,
+      </if>
+      <if test="resourceUrl != null">
+        RESOURCE_URL,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="log != null">
+        LOG,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="pId != null">
+        #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null">
+        #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceUrl != null">
+        #{resourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.lotus.core.security.systemmenu.model.SystemMenu">
+    update system_menu
+    <set>
+      <if test="pId != null">
+        P_ID = #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null">
+        ACTION_URL = #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceUrl != null">
+        RESOURCE_URL = #{resourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        VALID = #{valid,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="log != null">
+        LOG = #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        CREATE_BY = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        UPDATE_BY = #{updateBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectSystemMenus" parameterType="com.lotus.core.security.systemmenu.model.SystemMenu" 
+           resultType="com.lotus.core.security.systemmenu.model.SystemMenu">
+  
+     SELECT 
+     A.ID AS id, 
+     A.P_ID AS pId, 
+     A.NAME AS name, 
+     A.ACTION_URL AS actionUrl, 
+     A.RESOURCE_URL AS resourceUrl
+     FROM SYSTEM_MENU A
+      <trim prefix="WHERE " suffixOverrides="AND">
+       <if test="id != null">
+        A.ID = #{id,jdbcType=BIGINT} AND
+      </if>
+      <if test="name != null and name !=''">
+        A.NAME Like CONCAT('%',#{name,jdbcType=VARCHAR},'%') AND
+      </if>
+      <if test="pId != null">
+        A.P_ID = #{pId,jdbcType=BIGINT} AND
+      </if>
+       <if test="valid != null">
+        A.VALID = #{valid,jdbcType=INTEGER} AND
+      </if>
+      </trim>
+      ORDER BY A.P_ID 
+  
+  </select>
+</mapper>
